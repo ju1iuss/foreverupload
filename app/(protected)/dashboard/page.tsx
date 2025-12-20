@@ -459,7 +459,7 @@ export default function DashboardPage() {
                         const date = new Date(value);
                         return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
                       }}
-                      formatter={(value: number) => [value, 'Pins']}
+                      formatter={(value: number | undefined) => [value ?? 0, 'Pins']}
                     />
                     <Line 
                       type="monotone" 

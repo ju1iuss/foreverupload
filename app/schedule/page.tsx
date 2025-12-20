@@ -114,14 +114,14 @@ export default function SchedulePage() {
     window.location.href = '/api/auth/pinterest';
   };
 
-  const handleImagesUploaded = (urls: string[]) => {
-    const newImages = urls.map((url) => ({
+  const handleImagesUploaded = (url: string) => {
+    const newImage = {
       url,
       title: '',
       description: '',
       selected: true,
-    }));
-    setImages([...images, ...newImages]);
+    };
+    setImages([...images, newImage]);
   };
 
   const handleRemoveImage = (index: number) => {

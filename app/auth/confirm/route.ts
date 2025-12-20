@@ -9,6 +9,7 @@ export async function GET(request: NextRequest) {
   const token = searchParams.get('token');
   const code = searchParams.get('code');
   const type = searchParams.get('type') as EmailOtpType | null;
+  const email = searchParams.get('email');
   const next = searchParams.get('next') ?? '/dashboard';
 
   const redirectTo = new URL(request.url);
@@ -69,11 +70,12 @@ export async function GET(request: NextRequest) {
     console.error('Token hash verification error:', error);
   }
 
-  // Fallback: try token
-  if (token && type) {
+  // Fallback: try token (requires email for EmailOtpType)
+  if (token && type && email) {
     const { error } = await supabase.auth.verifyOtp({
       type,
       token,
+      email,
     });
 
     if (!error) {
