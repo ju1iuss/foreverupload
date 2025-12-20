@@ -12,8 +12,12 @@ export async function GET(request: NextRequest) {
   const email = searchParams.get('email');
   const next = searchParams.get('next') ?? '/dashboard';
 
-  const redirectTo = new URL(request.url);
-  redirectTo.pathname = next;
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL;
+  if (!siteUrl) {
+    throw new Error('NEXT_PUBLIC_SITE_URL environment variable is required');
+  }
+
+  const redirectTo = new URL(next, siteUrl);
   redirectTo.searchParams.delete('token_hash');
   redirectTo.searchParams.delete('token');
   redirectTo.searchParams.delete('code');
@@ -86,8 +90,7 @@ export async function GET(request: NextRequest) {
   }
 
   // Error: redirect to auth with error message
-  const errorRedirect = new URL(request.url);
-  errorRedirect.pathname = '/auth';
+  const errorRedirect = new URL('/auth', siteUrl);
   errorRedirect.searchParams.set('error', 'Invalid or expired confirmation link. Please try signing up again.');
   return NextResponse.redirect(errorRedirect);
 }

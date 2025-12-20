@@ -10,7 +10,11 @@ export async function GET(request: NextRequest) {
   }
 
   const clientId = process.env.PINTEREST_CLIENT_ID;
-  const redirectUri = process.env.PINTEREST_REDIRECT_URI || `${process.env.NEXT_PUBLIC_SITE_URL}/api/auth/pinterest/callback`;
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL;
+  if (!siteUrl) {
+    throw new Error('NEXT_PUBLIC_SITE_URL environment variable is required');
+  }
+  const redirectUri = process.env.PINTEREST_REDIRECT_URI || `${siteUrl}/api/auth/pinterest/callback`;
   // For Pinterest V5, scopes should be comma-separated. 
   // Added 'user_accounts:read' to get user info and 'refresh_token' to get a refresh token.
   const scopes = 'boards:read,boards:write,pins:read,pins:write,user_accounts:read';

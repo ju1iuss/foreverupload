@@ -7,7 +7,10 @@ export async function GET(request: NextRequest) {
   const state = searchParams.get('state'); // user_id
   const error = searchParams.get('error');
 
-  const frontendUrl = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000';
+  const frontendUrl = process.env.NEXT_PUBLIC_SITE_URL;
+  if (!frontendUrl) {
+    throw new Error('NEXT_PUBLIC_SITE_URL environment variable is required');
+  }
 
   if (error) {
     return NextResponse.redirect(`${frontendUrl}/auth?error=${error}`);
