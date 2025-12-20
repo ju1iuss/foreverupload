@@ -57,6 +57,10 @@ export async function middleware(request: NextRequest) {
   const { data: { user } } = await supabase.auth.getUser();
   console.log(`Middleware: ${request.nextUrl.pathname} - User: ${user?.email || 'none'}`);
 
+  const host = request.headers.get('host');
+  const protocol = request.headers.get('x-forwarded-proto') || 'http';
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || `${protocol}://${host}`;
+
   const isAuthPage = request.nextUrl.pathname === '/auth';
   const isLandingPage = request.nextUrl.pathname === '/';
   const isProtectedRoute = request.nextUrl.pathname.startsWith('/dashboard') || 
@@ -66,11 +70,11 @@ export async function middleware(request: NextRequest) {
 
   if (user) {
     if (isAuthPage || isLandingPage) {
-      return NextResponse.redirect(new URL('/dashboard', request.url));
+      return NextResponse.redirect(new URL('/dashboard', siteUrl));
     }
   } else {
     if (isProtectedRoute) {
-      return NextResponse.redirect(new URL('/auth', request.url));
+      return NextResponse.redirect(new URL('/auth', siteUrl));
     }
   }
 

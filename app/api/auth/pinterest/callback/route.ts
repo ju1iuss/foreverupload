@@ -7,10 +7,9 @@ export async function GET(request: NextRequest) {
   const state = searchParams.get('state'); // user_id
   const error = searchParams.get('error');
 
-  const frontendUrl = process.env.NEXT_PUBLIC_SITE_URL;
-  if (!frontendUrl) {
-    throw new Error('NEXT_PUBLIC_SITE_URL environment variable is required');
-  }
+  const host = request.headers.get('host');
+  const protocol = request.headers.get('x-forwarded-proto') || 'http';
+  const frontendUrl = process.env.NEXT_PUBLIC_SITE_URL || `${protocol}://${host}`;
 
   if (error) {
     return NextResponse.redirect(`${frontendUrl}/auth?error=${error}`);

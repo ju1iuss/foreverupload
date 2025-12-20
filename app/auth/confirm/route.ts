@@ -12,10 +12,9 @@ export async function GET(request: NextRequest) {
   const email = searchParams.get('email');
   const next = searchParams.get('next') ?? '/dashboard';
 
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL;
-  if (!siteUrl) {
-    throw new Error('NEXT_PUBLIC_SITE_URL environment variable is required');
-  }
+  const host = request.headers.get('host');
+  const protocol = request.headers.get('x-forwarded-proto') || 'http';
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || `${protocol}://${host}`;
 
   const redirectTo = new URL(next, siteUrl);
   redirectTo.searchParams.delete('token_hash');
