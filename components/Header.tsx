@@ -47,8 +47,19 @@ export default function Header() {
       }}
     >
       <div style={{ display: 'flex', gap: '2rem', alignItems: 'center' }}>
-        <Link href="/" style={{ fontSize: '1.25rem', fontWeight: 600, textDecoration: 'none', color: '#e0e0e0' }}>
-          Pinterest Scheduler
+        <Link href="/" style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', textDecoration: 'none' }}>
+          <img
+            src="/logo.png"
+            alt="ForeverUpload"
+            style={{
+              height: '28px',
+              width: 'auto',
+              objectFit: 'contain',
+            }}
+          />
+          <span style={{ fontSize: '1.25rem', fontWeight: 600, color: '#e0e0e0' }}>
+            ForeverUpload
+          </span>
         </Link>
         <nav style={{ display: 'flex', gap: '1rem' }}>
           <Link
@@ -98,10 +109,10 @@ export default function Header() {
             onClick={handleConnect}
             style={{
               padding: '0.5rem 1rem',
-              background: '#e60023',
+              background: '#4A90E2',
               border: 'none',
               borderRadius: '24px',
-              color: '#fff',
+              color: '#d2ccc6',
               fontSize: '0.875rem',
               fontWeight: 600,
               cursor: 'pointer',

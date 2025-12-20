@@ -97,8 +97,8 @@ export default function ProtectedLayout({
         <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: '3px', background: '#252525' }}>
           <div className="loading-bar-animation" style={{ 
             height: '100%', 
-            background: '#FF006F', 
-            boxShadow: '0 0 10px #FF006F'
+            background: '#4A90E2', 
+            boxShadow: '0 0 10px #4A90E2'
           }} />
         </div>
         <style>{`

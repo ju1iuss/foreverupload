@@ -253,7 +253,7 @@ export default function DashboardPage() {
     <div>
       <div style={{ marginBottom: '1rem', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
         <div>
-          <h1 style={{ fontSize: '2rem', fontWeight: 700, marginBottom: '0.5rem', color: '#fff' }}>
+          <h1 style={{ fontSize: '2rem', fontWeight: 700, marginBottom: '0.5rem', color: '#d2ccc6' }}>
             Dashboard
           </h1>
           <p style={{ color: '#666', fontSize: '0.9375rem' }}>
@@ -279,8 +279,8 @@ export default function DashboardPage() {
                   fontWeight: 600,
                   border: 'none',
                   cursor: 'pointer',
-                  background: timeRange === range ? '#FF006F' : 'transparent',
-                  color: timeRange === range ? '#fff' : '#666',
+                  background: timeRange === range ? '#4A90E2' : 'transparent',
+                  color: timeRange === range ? '#d2ccc6' : '#666',
                   transition: 'all 0.2s',
                 }}
               >
@@ -311,19 +311,19 @@ export default function DashboardPage() {
               title="Impressions"
               value={formatNumber(filteredMetrics.totalImpressions)}
               previous={filteredMetrics.previousPeriod?.impressions || 0}
-              color="#FF006F"
+              color="#4A90E2"
             />
             <CompactMetricCard
               title="Saves"
               value={formatNumber(filteredMetrics.totalSaves)}
               previous={filteredMetrics.previousPeriod?.saves || 0}
-              color="#FF006F"
+              color="#4A90E2"
             />
             <CompactMetricCard
               title="Clicks"
               value={formatNumber(filteredMetrics.totalClicks)}
               previous={filteredMetrics.previousPeriod?.clicks || 0}
-              color="#FF006F"
+              color="#4A90E2"
             />
           </div>
 
@@ -368,7 +368,7 @@ export default function DashboardPage() {
                         background: '#252525', 
                         border: '1px solid #333', 
                         borderRadius: '6px',
-                        color: '#fff',
+                        color: '#d2ccc6',
                         fontSize: '12px'
                       }}
                       labelFormatter={(value) => {
@@ -383,7 +383,7 @@ export default function DashboardPage() {
                     <Line 
                       type="monotone" 
                       dataKey="impressions" 
-                      stroke="#FF006F" 
+                      stroke="#4A90E2" 
                       strokeWidth={2}
                       dot={false}
                       name="Impressions"
@@ -452,7 +452,7 @@ export default function DashboardPage() {
                         background: '#252525', 
                         border: '1px solid #333', 
                         borderRadius: '6px',
-                        color: '#fff',
+                        color: '#d2ccc6',
                         fontSize: '12px'
                       }}
                       labelFormatter={(value) => {
@@ -464,9 +464,9 @@ export default function DashboardPage() {
                     <Line 
                       type="monotone" 
                       dataKey="count" 
-                      stroke="#FF006F" 
+                      stroke="#4A90E2" 
                       strokeWidth={2}
-                      dot={{ fill: '#FF006F', r: 3 }}
+                      dot={{ fill: '#4A90E2', r: 3 }}
                       name="Pins Posted"
                     />
                   </LineChart>
@@ -485,31 +485,31 @@ export default function DashboardPage() {
               title="Total Created"
               value={filteredMetrics.totalPins}
               previous={0}
-              color="#FF006F"
+              color="#4A90E2"
             />
             <CompactMetricCard
               title="Posted"
               value={filteredMetrics.postedPins}
               previous={0}
-              color="#FF006F"
+              color="#4A90E2"
             />
             <CompactMetricCard
               title="Pending"
               value={filteredMetrics.pendingPins}
               previous={0}
-              color="#FF006F"
+              color="#4A90E2"
             />
             <CompactMetricCard
               title="Failed"
               value={filteredMetrics.failedPins}
               previous={0}
-              color="#FF006F"
+              color="#4A90E2"
             />
             <CompactMetricCard
               title="Engagement"
               value={`${calculateEngagementRate()}%`}
               previous={calculatePrevEngagementRate()}
-              color="#FF006F"
+              color="#4A90E2"
               isPercentage={true}
             />
           </div>
@@ -594,14 +594,14 @@ export default function DashboardPage() {
                           }}
                         />
                         <div style={{ flex: 1, minWidth: 0 }}>
-                          <div style={{ fontSize: '0.8125rem', fontWeight: 500, color: '#fff', marginBottom: '0.25rem', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                          <div style={{ fontSize: '0.8125rem', fontWeight: 500, color: '#d2ccc6', marginBottom: '0.25rem', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                             {pin.title || 'Untitled Pin'}
                           </div>
                           <div style={{ display: 'flex', gap: '1rem', fontSize: '0.75rem', color: '#666', flexWrap: 'wrap' }}>
                             <span>{formatNumber(pin.impressions || 0)} views</span>
-                            <span style={{ color: '#FF006F' }}>{formatNumber(pin.saves || 0)} saves</span>
-                            <span style={{ color: '#FF006F' }}>{formatNumber(pin.clicks || 0)} clicks</span>
-                            <span style={{ color: '#FF006F' }}>{engagementRate}% engagement</span>
+                            <span style={{ color: '#4A90E2' }}>{formatNumber(pin.saves || 0)} saves</span>
+                            <span style={{ color: '#4A90E2' }}>{formatNumber(pin.clicks || 0)} clicks</span>
+                            <span style={{ color: '#4A90E2' }}>{engagementRate}% engagement</span>
                             {pin.posted_at && (
                               <span style={{ color: '#999' }}>{formatDate(pin.posted_at)}</span>
                             )}
@@ -630,7 +630,7 @@ export default function DashboardPage() {
                             onMouseEnter={(e) => {
                               e.currentTarget.style.background = '#252525';
                               e.currentTarget.style.borderColor = '#444';
-                              e.currentTarget.style.color = '#fff';
+                              e.currentTarget.style.color = '#d2ccc6';
                             }}
                             onMouseLeave={(e) => {
                               e.currentTarget.style.background = '#1a1a1a';
@@ -699,7 +699,7 @@ function CompactMetricCard({
         {prevNum > 0 && (
           <div style={{ 
             fontSize: '0.75rem', 
-            color: '#FF006F',
+            color: '#4A90E2',
             fontWeight: 500,
             display: 'flex',
             alignItems: 'center',

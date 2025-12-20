@@ -444,7 +444,7 @@ export default function ContentPoolPage() {
     <div>
       <div style={{ marginBottom: '2rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
         <div>
-          <h1 style={{ fontSize: '2rem', fontWeight: 700, marginBottom: '0.5rem', color: '#fff' }}>
+          <h1 style={{ fontSize: '2rem', fontWeight: 700, marginBottom: '0.5rem', color: '#d2ccc6' }}>
             Content Pool
           </h1>
           <p style={{ color: '#666', fontSize: '0.9375rem', marginBottom: '0.5rem' }}>
@@ -468,7 +468,7 @@ export default function ContentPoolPage() {
           padding: '4rem', 
           textAlign: 'center' 
         }}>
-          <h2 style={{ fontSize: '1.25rem', fontWeight: 600, marginBottom: '0.5rem', color: '#fff' }}>
+          <h2 style={{ fontSize: '1.25rem', fontWeight: 600, marginBottom: '0.5rem', color: '#d2ccc6' }}>
             No content yet
           </h2>
           <p style={{ color: '#666', marginBottom: '1.5rem' }}>
@@ -521,7 +521,7 @@ export default function ContentPoolPage() {
           >
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
               <div>
-                <h2 style={{ fontSize: '1.5rem', fontWeight: 700, color: '#fff', marginBottom: '0.25rem' }}>
+                <h2 style={{ fontSize: '1.5rem', fontWeight: 700, color: '#d2ccc6', marginBottom: '0.25rem' }}>
                   Upload Content
                 </h2>
                 <p style={{ color: '#666', fontSize: '0.875rem' }}>
@@ -540,7 +540,7 @@ export default function ContentPoolPage() {
                   lineHeight: 1,
                 }}
                 onMouseEnter={(e) => {
-                  e.currentTarget.style.color = '#fff';
+                  e.currentTarget.style.color = '#d2ccc6';
                 }}
                 onMouseLeave={(e) => {
                   e.currentTarget.style.color = '#999';
@@ -723,7 +723,7 @@ export default function ContentPoolPage() {
                                 border: img.selected ? 'none' : '1px solid rgba(255, 255, 255, 0.3)',
                               }}
                             >
-                              {img.selected && <span style={{ color: '#fff', fontSize: '0.7rem', fontWeight: 'bold' }}>✓</span>}
+                              {img.selected && <span style={{ color: '#d2ccc6', fontSize: '0.7rem', fontWeight: 'bold' }}>✓</span>}
                             </div>
                             <button
                               onClick={(e) => {
@@ -749,7 +749,7 @@ export default function ContentPoolPage() {
                               }}
                               onMouseEnter={(e) => {
                                 e.currentTarget.style.background = 'rgba(0, 0, 0, 0.8)';
-                                e.currentTarget.style.color = '#fff';
+                                e.currentTarget.style.color = '#d2ccc6';
                               }}
                               onMouseLeave={(e) => {
                                 e.currentTarget.style.background = 'rgba(0, 0, 0, 0.6)';
@@ -790,7 +790,7 @@ export default function ContentPoolPage() {
                               }}
                               onMouseEnter={(e) => {
                                 e.currentTarget.style.background = 'rgba(0, 0, 0, 0.8)';
-                                e.currentTarget.style.color = '#fff';
+                                e.currentTarget.style.color = '#d2ccc6';
                               }}
                               onMouseLeave={(e) => {
                                 e.currentTarget.style.background = 'rgba(0, 0, 0, 0.6)';
@@ -810,7 +810,7 @@ export default function ContentPoolPage() {
                             {(img.title || img.description || img.link) && (
                               <div style={{ padding: '0.5rem', borderTop: '1px solid #333' }}>
                                 {img.title && (
-                                  <div style={{ fontSize: '0.7rem', fontWeight: 600, marginBottom: '0.2rem', color: '#fff', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                                  <div style={{ fontSize: '0.7rem', fontWeight: 600, marginBottom: '0.2rem', color: '#d2ccc6', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                                     {img.title}
                                   </div>
                                 )}
@@ -1025,7 +1025,7 @@ export default function ContentPoolPage() {
               padding: '1.5rem',
             }}
           >
-            <h2 style={{ fontSize: '1.25rem', fontWeight: 700, color: '#fff', marginBottom: '1.5rem' }}>
+            <h2 style={{ fontSize: '1.25rem', fontWeight: 700, color: '#d2ccc6', marginBottom: '1.5rem' }}>
               Create New Board
             </h2>
 
@@ -1133,7 +1133,7 @@ export default function ContentPoolPage() {
                   background: !newBoardName.trim() || creatingBoard ? '#333' : '#4A90E2',
                   border: 'none',
                   borderRadius: '6px',
-                  color: '#fff',
+                  color: '#d2ccc6',
                   fontSize: '0.875rem',
                   fontWeight: 600,
                   cursor: !newBoardName.trim() || creatingBoard ? 'not-allowed' : 'pointer',
@@ -1175,7 +1175,7 @@ export default function ContentPoolPage() {
               gap: '1.5rem',
             }}
           >
-            <h2 style={{ fontSize: '1.5rem', fontWeight: 700, color: '#fff', marginBottom: '0.5rem' }}>
+            <h2 style={{ fontSize: '1.5rem', fontWeight: 700, color: '#d2ccc6', marginBottom: '0.5rem' }}>
               Add to Content Pool
             </h2>
             
@@ -1188,7 +1188,7 @@ export default function ContentPoolPage() {
                 <div style={{ fontSize: '0.875rem', color: '#999', marginBottom: '0.5rem', fontWeight: 500 }}>
                   Board
                 </div>
-                <div style={{ fontSize: '1rem', color: '#fff' }}>
+                <div style={{ fontSize: '1rem', color: '#d2ccc6' }}>
                   {boards.find((b) => b.id === pendingScheduleData.boardId)?.name || pendingScheduleData.boardId}
                 </div>
               </div>
@@ -1198,7 +1198,7 @@ export default function ContentPoolPage() {
               </p>
               
               <p style={{ fontSize: '0.9375rem', color: '#999', lineHeight: '1.6' }}>
-                These pins will be queued for manual posting (max 6 per day).
+                Added to schedule queue. Daily limit: 6 pins/day.
               </p>
             </div>
 
@@ -1254,7 +1254,7 @@ export default function ContentPoolPage() {
             }}
           >
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
-              <h2 style={{ fontSize: '1.25rem', fontWeight: 700, color: '#fff' }}>
+              <h2 style={{ fontSize: '1.25rem', fontWeight: 700, color: '#d2ccc6' }}>
                 Edit Image
               </h2>
               <button
@@ -1269,7 +1269,7 @@ export default function ContentPoolPage() {
                   lineHeight: 1,
                 }}
                 onMouseEnter={(e) => {
-                  e.currentTarget.style.color = '#fff';
+                  e.currentTarget.style.color = '#d2ccc6';
                 }}
                 onMouseLeave={(e) => {
                   e.currentTarget.style.color = '#999';

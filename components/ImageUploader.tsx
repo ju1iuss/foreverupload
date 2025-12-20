@@ -127,7 +127,7 @@ export default function ImageUploader({ onUpload, onProgress, dragActive = false
           >
             <div style={{ fontSize: '4rem' }}>{uploading ? '⏳' : '📷'}</div>
             <div>
-              <div style={{ fontSize: '1.5rem', marginBottom: '0.5rem', color: uploading ? '#4A90E2' : '#fff', fontWeight: 600 }}>
+              <div style={{ fontSize: '1.5rem', marginBottom: '0.5rem', color: uploading ? '#4A90E2' : '#d2ccc6', fontWeight: 600 }}>
                 {uploading ? `Uploading images... (${uploadProgress.uploaded}/${uploadProgress.total})` : 'Drop images here'}
               </div>
               <div style={{ fontSize: '1rem', color: '#999' }}>

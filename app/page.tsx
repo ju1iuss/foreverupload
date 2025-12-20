@@ -30,13 +30,24 @@ export default function HomePage() {
   }
 
   return (
-    <div style={{ minHeight: '100vh', background: '#191919', color: '#fff' }}>
+    <div style={{ minHeight: '100vh', background: '#191919', color: '#d2ccc6' }}>
       <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '2rem 2rem' }}>
         {/* Header */}
         <header style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '6rem' }}>
-          <h1 style={{ fontSize: '1.5rem', fontWeight: 700 }}>
-            <span style={{ color: '#FF006F' }}>Pin</span>Upload
-          </h1>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+            <img
+              src="/logo.png"
+              alt="ForeverUpload"
+              style={{
+                height: '32px',
+                width: 'auto',
+                objectFit: 'contain',
+              }}
+            />
+            <span style={{ fontSize: '1.5rem', fontWeight: 700, color: '#d2ccc6' }}>
+              ForeverUpload
+            </span>
+          </div>
           <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
             <Link
               href="/auth"
@@ -45,7 +56,7 @@ export default function HomePage() {
                 background: 'transparent',
                 border: '1px solid #333',
                 borderRadius: '6px',
-                color: '#fff',
+                color: '#d2ccc6',
                 fontWeight: 600,
                 textDecoration: 'none',
                 fontSize: '0.9375rem',
@@ -62,38 +73,38 @@ export default function HomePage() {
             >
               Log in
             </Link>
-            <Link
-              href="/auth"
-              style={{
-                padding: '0.75rem 1.5rem',
-                background: '#FF006F',
-                border: 'none',
-                borderRadius: '6px',
-                color: '#fff',
-                fontWeight: 600,
-                textDecoration: 'none',
-                fontSize: '0.9375rem',
-                transition: 'background 0.2s',
-              }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.background = '#e6005f';
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.background = '#FF006F';
-              }}
-            >
-              Get Started
-            </Link>
+              <Link
+                href="/auth"
+                style={{
+                  padding: '0.75rem 1.5rem',
+                  background: '#4A90E2',
+                  border: 'none',
+                  borderRadius: '6px',
+                  color: '#d2ccc6',
+                  fontWeight: 600,
+                  textDecoration: 'none',
+                  fontSize: '0.9375rem',
+                  transition: 'background 0.2s',
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.background = '#357ABD';
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.background = '#4A90E2';
+                }}
+              >
+                Get Started
+              </Link>
           </div>
         </header>
 
         {/* Hero Section */}
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(400px, 1fr))', gap: '4rem', alignItems: 'center', marginBottom: '8rem' }}>
           <div style={{ textAlign: 'left' }}>
-            <h2 style={{ fontSize: '3.5rem', fontWeight: 700, marginBottom: '1.5rem', lineHeight: '1.1' }}>
-              Make <span style={{ background: '#FF006F', padding: '0 0.25rem', borderRadius: '0', fontWeight: 800 }}>Pinterest</span> your most profitable marketing channel
+            <h2 style={{ fontSize: '3.5rem', fontWeight: 800, marginBottom: '1.5rem', lineHeight: '1.1' }}>
+              Make <span style={{ background: '#4A90E2', padding: '0 0.25rem', borderRadius: '0', fontWeight: 800 }}>Pinterest</span> your most profitable marketing channel
             </h2>
-            <p style={{ fontSize: '1rem', color: '#999', marginBottom: '3rem', maxWidth: '600px' }}>
+            <p style={{ fontSize: '1rem', color: '#999', marginBottom: '3rem', maxWidth: '600px', lineHeight: '1.8' }}>
               Post content, see analytics, and plan your growth effortlessly. Schedule pins, track performance metrics, and optimize your Pinterest strategy all in one place.
             </p>
             <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: '1.5rem', paddingTop: '1rem' }}>
@@ -101,10 +112,10 @@ export default function HomePage() {
                 href="/auth"
                 style={{
                   padding: '1rem 2.5rem',
-                  background: '#FF006F',
+                  background: '#4A90E2',
                   border: 'none',
                   borderRadius: '8px',
-                  color: '#fff',
+                  color: '#d2ccc6',
                   fontWeight: 600,
                   textDecoration: 'none',
                   fontSize: '1.125rem',
@@ -114,10 +125,10 @@ export default function HomePage() {
                   gap: '0.5rem',
                 }}
                 onMouseEnter={(e) => {
-                  e.currentTarget.style.background = '#e6005f';
+                  e.currentTarget.style.background = '#357ABD';
                 }}
                 onMouseLeave={(e) => {
-                  e.currentTarget.style.background = '#FF006F';
+                  e.currentTarget.style.background = '#4A90E2';
                 }}
               >
                 <svg 
@@ -168,7 +179,7 @@ export default function HomePage() {
                     ))}
                   </div>
                   <p style={{ fontSize: '0.875rem', color: '#999', margin: 0 }}>
-                    <span style={{ fontWeight: 700, color: '#fff' }}>7,935</span> brands growing on Pinterest
+                    <span style={{ fontWeight: 700, color: '#d2ccc6' }}>7,935</span> brands growing on Pinterest
                   </p>
                 </div>
               </div>
@@ -179,7 +190,7 @@ export default function HomePage() {
           <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
             <img 
               src="/dashboard.png" 
-              alt="PinUpload Dashboard Preview"
+              alt="ForeverUpload Dashboard Preview"
               style={{ 
                 width: '100%', 
                 maxWidth: '600px', 
@@ -203,8 +214,8 @@ export default function HomePage() {
             description="Monitor your pin performance including impressions, saves, and clicks with detailed real-time data."
           />
           <FeatureCard
-            title="Scheduled Publishing"
-            description="Your planned pins are published exactly when you've scheduled them, ensuring global reach."
+            title="Content Planning"
+            description="Plan your pins in advance with a clear scheduling calendar to maintain consistency."
           />
         </div>
 
@@ -213,17 +224,17 @@ export default function HomePage() {
           <h3 style={{ fontSize: '2.5rem', fontWeight: 700, marginBottom: '4rem' }}>How it works</h3>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '4rem' }}>
             <div>
-              <div style={{ color: '#FF006F', fontSize: '1.5rem', fontWeight: 800, marginBottom: '1rem' }}>01</div>
+              <div style={{ color: '#4A90E2', fontSize: '1.5rem', fontWeight: 800, marginBottom: '1rem' }}>01</div>
               <h4 style={{ fontSize: '1.25rem', fontWeight: 600, marginBottom: '0.5rem' }}>Connect Account</h4>
               <p style={{ color: '#999' }}>Securely link your Pinterest business account in seconds via our authorized API integration.</p>
             </div>
             <div>
-              <div style={{ color: '#FF006F', fontSize: '1.5rem', fontWeight: 800, marginBottom: '1rem' }}>02</div>
+              <div style={{ color: '#4A90E2', fontSize: '1.5rem', fontWeight: 800, marginBottom: '1rem' }}>02</div>
               <h4 style={{ fontSize: '1.25rem', fontWeight: 600, marginBottom: '0.5rem' }}>Plan & Schedule</h4>
-              <p style={{ color: '#999' }}>Upload your creative assets and set your publishing calendar with ease.</p>
+              <p style={{ color: '#999' }}>Upload your creative assets and plan your content calendar with ease.</p>
             </div>
             <div>
-              <div style={{ color: '#FF006F', fontSize: '1.5rem', fontWeight: 800, marginBottom: '1rem' }}>03</div>
+              <div style={{ color: '#4A90E2', fontSize: '1.5rem', fontWeight: 800, marginBottom: '1rem' }}>03</div>
               <h4 style={{ fontSize: '1.25rem', fontWeight: 600, marginBottom: '0.5rem' }}>Analyze & Scale</h4>
               <p style={{ color: '#999' }}>Track performance metrics and optimize your strategy for maximum brand growth.</p>
             </div>
@@ -248,10 +259,10 @@ export default function HomePage() {
             </ul>
           </div>
           <div style={{ background: '#1a1a1a', border: '1px solid #333', borderRadius: '16px', padding: '3rem', textAlign: 'center' }}>
-            <div style={{ color: '#FF006F', fontSize: '3rem', fontWeight: 800, marginBottom: '0.5rem' }}>450M+</div>
-            <div style={{ color: '#fff', fontSize: '1.25rem', fontWeight: 600, marginBottom: '2rem' }}>Monthly Active Users</div>
-            <div style={{ color: '#FF006F', fontSize: '3rem', fontWeight: 800, marginBottom: '0.5rem' }}>80%</div>
-            <div style={{ color: '#fff', fontSize: '1.25rem', fontWeight: 600 }}>Weekly Pinners discovering new brands</div>
+            <div style={{ color: '#4A90E2', fontSize: '3rem', fontWeight: 800, marginBottom: '0.5rem' }}>450M+</div>
+            <div style={{ color: '#d2ccc6', fontSize: '1.25rem', fontWeight: 600, marginBottom: '2rem' }}>Monthly Active Users</div>
+            <div style={{ color: '#4A90E2', fontSize: '3rem', fontWeight: 800, marginBottom: '0.5rem' }}>80%</div>
+            <div style={{ color: '#d2ccc6', fontSize: '1.25rem', fontWeight: 600 }}>Weekly Pinners discovering new brands</div>
           </div>
         </div>
 
@@ -270,16 +281,16 @@ export default function HomePage() {
             Ready to grow your Pinterest presence?
           </h3>
           <p style={{ color: '#999', marginBottom: '2rem', fontSize: '1.125rem' }}>
-            Join creators who plan and schedule their Pinterest content with PinUpload.
+            Join creators who plan and schedule their Pinterest content with ForeverUpload.
           </p>
           <Link
             href="/auth"
             style={{
               padding: '1rem 2rem',
-              background: '#FF006F',
+              background: '#4A90E2',
               border: 'none',
               borderRadius: '8px',
-              color: '#fff',
+              color: '#d2ccc6',
               fontWeight: 600,
               textDecoration: 'none',
               fontSize: '1rem',
@@ -287,10 +298,10 @@ export default function HomePage() {
               transition: 'background 0.2s',
             }}
             onMouseEnter={(e) => {
-              e.currentTarget.style.background = '#e6005f';
+              e.currentTarget.style.background = '#357ABD';
             }}
             onMouseLeave={(e) => {
-              e.currentTarget.style.background = '#FF006F';
+              e.currentTarget.style.background = '#4A90E2';
             }}
           >
             Get Started Free
@@ -301,15 +312,26 @@ export default function HomePage() {
         <footer style={{ borderTop: '1px solid #333', padding: '4rem 0 2rem' }}>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '4rem', marginBottom: '4rem' }}>
             <div>
-              <h4 style={{ fontSize: '1.125rem', fontWeight: 700, marginBottom: '1.5rem' }}>
-                <span style={{ color: '#FF006F' }}>Pin</span>Upload
-              </h4>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '1.5rem' }}>
+                <img
+                  src="/logo.png"
+                  alt="ForeverUpload"
+                  style={{
+                    height: '32px',
+                    width: 'auto',
+                    objectFit: 'contain',
+                  }}
+                />
+                <span style={{ fontSize: '1.125rem', fontWeight: 700, color: '#d2ccc6' }}>
+                  ForeverUpload
+                </span>
+              </div>
               <p style={{ color: '#666', fontSize: '0.875rem', lineHeight: '1.6' }}>
                 The professional way to manage and grow your brand on Pinterest. Built for speed and reliability.
               </p>
             </div>
             <div>
-              <h5 style={{ fontSize: '0.875rem', fontWeight: 600, color: '#fff', marginBottom: '1.25rem', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Product</h5>
+              <h5 style={{ fontSize: '0.875rem', fontWeight: 600, color: '#d2ccc6', marginBottom: '1.25rem', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Product</h5>
               <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
                 <li><Link href="/auth" style={{ color: '#666', textDecoration: 'none', fontSize: '0.875rem' }}>Features</Link></li>
                 <li><Link href="/auth" style={{ color: '#666', textDecoration: 'none', fontSize: '0.875rem' }}>Analytics</Link></li>
@@ -317,7 +339,7 @@ export default function HomePage() {
               </ul>
             </div>
             <div>
-              <h5 style={{ fontSize: '0.875rem', fontWeight: 600, color: '#fff', marginBottom: '1.25rem', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Legal</h5>
+              <h5 style={{ fontSize: '0.875rem', fontWeight: 600, color: '#d2ccc6', marginBottom: '1.25rem', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Legal</h5>
               <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
                 <li><Link href="/imprint" style={{ color: '#666', textDecoration: 'none', fontSize: '0.875rem' }}>Imprint</Link></li>
                 <li><Link href="/privacy" style={{ color: '#666', textDecoration: 'none', fontSize: '0.875rem' }}>Privacy Policy</Link></li>
@@ -326,7 +348,7 @@ export default function HomePage() {
             </div>
           </div>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', paddingTop: '2rem', borderTop: '1px solid #222' }}>
-            <p style={{ color: '#444', fontSize: '0.875rem' }}>&copy; {new Date().getFullYear()} PinUpload. All rights reserved.</p>
+            <p style={{ color: '#444', fontSize: '0.875rem' }}>&copy; {new Date().getFullYear()} ForeverUpload. All rights reserved.</p>
           </div>
         </footer>
       </div>
@@ -345,7 +367,7 @@ function FeatureCard({ title, description }: { title: string; description: strin
         textAlign: 'center',
       }}
     >
-      <h3 style={{ fontSize: '1.25rem', fontWeight: 600, marginBottom: '0.75rem', color: '#fff' }}>
+      <h3 style={{ fontSize: '1.25rem', fontWeight: 600, marginBottom: '0.75rem', color: '#d2ccc6' }}>
         {title}
       </h3>
       <p style={{ color: '#999', fontSize: '0.9375rem', lineHeight: '1.6' }}>

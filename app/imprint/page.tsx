@@ -1,8 +1,8 @@
 export default function ImprintPage() {
   return (
-    <div style={{ minHeight: '100vh', padding: '2rem', maxWidth: '800px', margin: '0 auto', background: '#191919', color: '#fff' }}>
+    <div style={{ minHeight: '100vh', padding: '2rem', maxWidth: '800px', margin: '0 auto', background: '#191919', color: '#d2ccc6' }}>
       <header style={{ marginBottom: '2rem' }}>
-        <h1 style={{ fontSize: '2.5rem', fontWeight: 700, marginBottom: '1rem', color: '#fff' }}>
+        <h1 style={{ fontSize: '2.5rem', fontWeight: 700, marginBottom: '1rem', color: '#d2ccc6' }}>
           Imprint
         </h1>
         <p style={{ color: '#999', fontSize: '1.125rem' }}>
@@ -19,7 +19,7 @@ export default function ImprintPage() {
         color: '#e0e0e0',
       }}>
         <section style={{ marginBottom: '2rem' }}>
-          <h2 style={{ fontSize: '1.5rem', fontWeight: 600, marginBottom: '1rem', color: '#FF006F' }}>
+          <h2 style={{ fontSize: '1.5rem', fontWeight: 600, marginBottom: '1rem', color: '#4A90E2' }}>
             Information pursuant to § 5 TMG
           </h2>
           <p style={{ marginBottom: '1.5rem' }}>
@@ -30,7 +30,7 @@ export default function ImprintPage() {
         </section>
 
         <section style={{ marginBottom: '2rem' }}>
-          <h2 style={{ fontSize: '1.5rem', fontWeight: 600, marginBottom: '1rem', color: '#FF006F' }}>
+          <h2 style={{ fontSize: '1.5rem', fontWeight: 600, marginBottom: '1rem', color: '#4A90E2' }}>
             Address
           </h2>
           <p style={{ marginBottom: '0.5rem' }}>Karlsplatz 5</p>
@@ -39,7 +39,7 @@ export default function ImprintPage() {
         </section>
 
         <section style={{ marginBottom: '2rem' }}>
-          <h2 style={{ fontSize: '1.5rem', fontWeight: 600, marginBottom: '1rem', color: '#FF006F' }}>
+          <h2 style={{ fontSize: '1.5rem', fontWeight: 600, marginBottom: '1rem', color: '#4A90E2' }}>
             Contact
           </h2>
           <p style={{ marginBottom: '0.5rem' }}>Email: help@tasy.ai</p>
@@ -47,7 +47,7 @@ export default function ImprintPage() {
         </section>
 
         <section style={{ marginBottom: '2rem' }}>
-          <h2 style={{ fontSize: '1.5rem', fontWeight: 600, marginBottom: '1rem', color: '#FF006F' }}>
+          <h2 style={{ fontSize: '1.5rem', fontWeight: 600, marginBottom: '1rem', color: '#4A90E2' }}>
             Disclaimer
           </h2>
           <p style={{ marginBottom: '1rem' }}>
@@ -65,9 +65,9 @@ export default function ImprintPage() {
           style={{
             display: 'inline-block',
             padding: '0.75rem 1.5rem',
-            background: '#FF006F',
+            background: '#4A90E2',
             borderRadius: '8px',
-            color: '#fff',
+            color: '#d2ccc6',
             textDecoration: 'none',
             fontWeight: 600,
           }}

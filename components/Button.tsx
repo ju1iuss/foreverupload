@@ -34,8 +34,8 @@ export default function Button({
 
   const variantStyles: Record<string, React.CSSProperties> = {
     primary: {
-      background: disabled ? '#555' : '#FF006F',
-      color: '#fff',
+      background: disabled ? '#555' : '#4A90E2',
+      color: '#d2ccc6',
     },
     secondary: {
       background: disabled ? '#2a2a2a' : '#252525',
@@ -44,7 +44,7 @@ export default function Button({
     },
     danger: {
       background: disabled ? '#555' : '#ef4444',
-      color: '#fff',
+      color: '#d2ccc6',
     },
     ghost: {
       background: 'transparent',
@@ -70,7 +70,7 @@ export default function Button({
   const hoverStyles = disabled
     ? {}
     : variant === 'primary'
-      ? { background: '#e6005f' }
+      ? { background: '#357ABD' }
       : variant === 'secondary'
         ? { background: '#2a2a2a', borderColor: '#444' }
         : variant === 'danger'

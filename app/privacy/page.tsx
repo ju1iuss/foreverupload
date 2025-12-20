@@ -2,7 +2,7 @@ export default function PrivacyPolicyPage() {
   return (
     <div style={{ minHeight: '100vh', padding: '2rem', maxWidth: '800px', margin: '0 auto' }}>
       <header style={{ marginBottom: '2rem' }}>
-        <h1 style={{ fontSize: '2.5rem', fontWeight: 700, marginBottom: '1rem', color: '#fff' }}>
+        <h1 style={{ fontSize: '2.5rem', fontWeight: 700, marginBottom: '1rem', color: '#d2ccc6' }}>
           Privacy Policy
         </h1>
         <p style={{ color: '#999', fontSize: '0.875rem' }}>
@@ -19,11 +19,11 @@ export default function PrivacyPolicyPage() {
         color: '#e0e0e0',
       }}>
         <section style={{ marginBottom: '2rem' }}>
-          <h2 style={{ fontSize: '1.5rem', fontWeight: 600, marginBottom: '1rem', color: '#FF006F' }}>
+          <h2 style={{ fontSize: '1.5rem', fontWeight: 600, marginBottom: '1rem', color: '#4A90E2' }}>
             1. Information We Collect
           </h2>
           <p style={{ marginBottom: '1rem' }}>
-            PinUpload collects and processes the following information:
+            ForeverUpload collects and processes the following information:
           </p>
           <ul style={{ marginLeft: '1.5rem', marginBottom: '1rem' }}>
             <li style={{ marginBottom: '0.5rem' }}>Account information (email, authentication credentials via Supabase)</li>
@@ -34,7 +34,7 @@ export default function PrivacyPolicyPage() {
         </section>
 
         <section style={{ marginBottom: '2rem' }}>
-          <h2 style={{ fontSize: '1.5rem', fontWeight: 600, marginBottom: '1rem', color: '#FF006F' }}>
+          <h2 style={{ fontSize: '1.5rem', fontWeight: 600, marginBottom: '1rem', color: '#4A90E2' }}>
             2. How We Use Your Information
           </h2>
           <p style={{ marginBottom: '1rem' }}>
@@ -45,7 +45,7 @@ export default function PrivacyPolicyPage() {
             <li style={{ marginBottom: '0.5rem' }}>Display your Pinterest boards and account information within the app</li>
             <li style={{ marginBottom: '0.5rem' }}>Store your scheduled content until it is posted</li>
           </ul>
-          <p style={{ fontWeight: 600, color: '#fff' }}>
+          <p style={{ fontWeight: 600, color: '#d2ccc6' }}>
             We DO NOT:
           </p>
           <ul style={{ marginLeft: '1.5rem', marginBottom: '1rem' }}>
@@ -57,7 +57,7 @@ export default function PrivacyPolicyPage() {
         </section>
 
         <section style={{ marginBottom: '2rem' }}>
-          <h2 style={{ fontSize: '1.5rem', fontWeight: 600, marginBottom: '1rem', color: '#FF006F' }}>
+          <h2 style={{ fontSize: '1.5rem', fontWeight: 600, marginBottom: '1rem', color: '#4A90E2' }}>
             3. Data Storage and Security
           </h2>
           <p style={{ marginBottom: '1rem' }}>
@@ -69,11 +69,11 @@ export default function PrivacyPolicyPage() {
         </section>
 
         <section style={{ marginBottom: '2rem' }}>
-          <h2 style={{ fontSize: '1.5rem', fontWeight: 600, marginBottom: '1rem', color: '#FF006F' }}>
+          <h2 style={{ fontSize: '1.5rem', fontWeight: 600, marginBottom: '1rem', color: '#4A90E2' }}>
             4. Pinterest Integration
           </h2>
           <p style={{ marginBottom: '1rem' }}>
-            PinUpload integrates with Pinterest via their official API. When you connect your Pinterest account:
+            ForeverUpload integrates with Pinterest via their official API. When you connect your Pinterest account:
           </p>
           <ul style={{ marginLeft: '1.5rem', marginBottom: '1rem' }}>
             <li style={{ marginBottom: '0.5rem' }}>We request only the permissions necessary to post content on your behalf</li>
@@ -87,7 +87,7 @@ export default function PrivacyPolicyPage() {
         </section>
 
         <section style={{ marginBottom: '2rem' }}>
-          <h2 style={{ fontSize: '1.5rem', fontWeight: 600, marginBottom: '1rem', color: '#FF006F' }}>
+          <h2 style={{ fontSize: '1.5rem', fontWeight: 600, marginBottom: '1rem', color: '#4A90E2' }}>
             5. Your Rights
           </h2>
           <p style={{ marginBottom: '1rem' }}>
@@ -102,16 +102,16 @@ export default function PrivacyPolicyPage() {
         </section>
 
         <section style={{ marginBottom: '2rem' }}>
-          <h2 style={{ fontSize: '1.5rem', fontWeight: 600, marginBottom: '1rem', color: '#FF006F' }}>
+          <h2 style={{ fontSize: '1.5rem', fontWeight: 600, marginBottom: '1rem', color: '#4A90E2' }}>
             6. Age Requirement
           </h2>
           <p>
-            PinUpload is intended for users aged 13 and older. By using this service, you confirm that you meet this age requirement. We do not knowingly collect information from children under 13.
+            ForeverUpload is intended for users aged 13 and older. By using this service, you confirm that you meet this age requirement. We do not knowingly collect information from children under 13.
           </p>
         </section>
 
         <section style={{ marginBottom: '2rem' }}>
-          <h2 style={{ fontSize: '1.5rem', fontWeight: 600, marginBottom: '1rem', color: '#FF006F' }}>
+          <h2 style={{ fontSize: '1.5rem', fontWeight: 600, marginBottom: '1rem', color: '#4A90E2' }}>
             7. Changes to This Policy
           </h2>
           <p>
@@ -120,7 +120,7 @@ export default function PrivacyPolicyPage() {
         </section>
 
         <section>
-          <h2 style={{ fontSize: '1.5rem', fontWeight: 600, marginBottom: '1rem', color: '#FF006F' }}>
+          <h2 style={{ fontSize: '1.5rem', fontWeight: 600, marginBottom: '1rem', color: '#4A90E2' }}>
             8. Contact Us
           </h2>
           <p>
@@ -135,9 +135,9 @@ export default function PrivacyPolicyPage() {
           style={{
             display: 'inline-block',
             padding: '0.75rem 1.5rem',
-            background: '#FF006F',
+            background: '#4A90E2',
             borderRadius: '8px',
-            color: '#fff',
+            color: '#d2ccc6',
             textDecoration: 'none',
             fontWeight: 600,
           }}

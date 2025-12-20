@@ -114,7 +114,7 @@ export default function BulkEditor({ onUpdate, selectedCount }: BulkEditorProps)
             }}
           >
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
-              <h2 style={{ fontSize: '1.5rem', fontWeight: 700, color: '#fff', marginBottom: '0.25rem' }}>
+              <h2 style={{ fontSize: '1.5rem', fontWeight: 700, color: '#d2ccc6', marginBottom: '0.25rem' }}>
                 Bulk Edit ({selectedCount} selected)
               </h2>
               <button
@@ -129,7 +129,7 @@ export default function BulkEditor({ onUpdate, selectedCount }: BulkEditorProps)
                   lineHeight: 1,
                 }}
                 onMouseEnter={(e) => {
-                  e.currentTarget.style.color = '#fff';
+                  e.currentTarget.style.color = '#d2ccc6';
                 }}
                 onMouseLeave={(e) => {
                   e.currentTarget.style.color = '#999';
@@ -287,7 +287,7 @@ export default function BulkEditor({ onUpdate, selectedCount }: BulkEditorProps)
               padding: '1.5rem',
             }}
           >
-            <h2 style={{ fontSize: '1.25rem', fontWeight: 700, color: '#fff', marginBottom: '1rem' }}>
+            <h2 style={{ fontSize: '1.25rem', fontWeight: 700, color: '#d2ccc6', marginBottom: '1rem' }}>
               Apply Changes
             </h2>
             
@@ -310,7 +310,7 @@ export default function BulkEditor({ onUpdate, selectedCount }: BulkEditorProps)
                     <div style={{ fontSize: '0.75rem', color: '#999', marginBottom: '0.25rem', fontWeight: 500 }}>
                       Title
                     </div>
-                    <div style={{ fontSize: '0.875rem', color: '#fff' }}>
+                    <div style={{ fontSize: '0.875rem', color: '#d2ccc6' }}>
                       {pendingUpdates.title}
                     </div>
                   </div>
@@ -320,7 +320,7 @@ export default function BulkEditor({ onUpdate, selectedCount }: BulkEditorProps)
                     <div style={{ fontSize: '0.75rem', color: '#999', marginBottom: '0.25rem', fontWeight: 500 }}>
                       Description
                     </div>
-                    <div style={{ fontSize: '0.875rem', color: '#fff' }}>
+                    <div style={{ fontSize: '0.875rem', color: '#d2ccc6' }}>
                       {pendingUpdates.description}
                     </div>
                   </div>

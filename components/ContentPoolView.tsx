@@ -189,7 +189,7 @@ export default function ContentPoolView({ pins, onRefresh }: ContentPoolViewProp
     switch (status) {
       case 'posted': return '#22c55e';
       case 'failed': return '#ef4444';
-      default: return '#FF006F';
+      default: return '#4A90E2';
     }
   };
 
@@ -213,7 +213,7 @@ export default function ContentPoolView({ pins, onRefresh }: ContentPoolViewProp
     <div>
       <div style={{ marginBottom: '0.75rem', padding: '0.75rem', background: '#191919', borderRadius: '6px', border: '1px solid #333', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
         <p style={{ fontSize: '0.75rem', color: '#999', margin: 0 }}>
-          Pins are not posted automatically. You can post manually here.
+          Plan your pins according to your daily schedule limit.
         </p>
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
           <span style={{ fontSize: '0.75rem', color: '#999' }}>Daily limit:</span>
@@ -234,7 +234,7 @@ export default function ContentPoolView({ pins, onRefresh }: ContentPoolViewProp
       
       {/* Ready Posts Section */}
       <div style={{ marginBottom: '1.5rem' }}>
-        <h2 style={{ fontSize: '0.8125rem', fontWeight: 600, color: '#fff', marginBottom: '0.5rem' }}>
+        <h2 style={{ fontSize: '0.8125rem', fontWeight: 600, color: '#d2ccc6', marginBottom: '0.5rem' }}>
           Ready ({readyPins.length})
         </h2>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(120px, 1fr))', gap: '0.5rem' }}>
@@ -272,7 +272,7 @@ export default function ContentPoolView({ pins, onRefresh }: ContentPoolViewProp
 
       {/* Posted Posts Section */}
       <div>
-        <h2 style={{ fontSize: '0.8125rem', fontWeight: 600, color: '#fff', marginBottom: '0.5rem' }}>
+        <h2 style={{ fontSize: '0.8125rem', fontWeight: 600, color: '#d2ccc6', marginBottom: '0.5rem' }}>
           Posted ({postedPins.length})
         </h2>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(120px, 1fr))', gap: '0.5rem' }}>

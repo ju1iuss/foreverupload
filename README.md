@@ -1,6 +1,6 @@
-# Pinterest Scheduler
+# ForeverUpload
 
-A minimal Pinterest scheduling app that automatically posts 8 pins per day during business hours.
+A Pinterest planning and scheduling app that helps you organize and plan your content strategy.
 
 ## Setup
 
@@ -63,14 +63,14 @@ npm run dev
 1. Connect your Pinterest account at `/auth`
 2. Upload images and schedule posts at `/schedule`
 3. View scheduled posts in the calendar at `/`
-4. Posts are automatically published via cron job (runs every hour 8am-5pm)
+4. View your scheduled content plan in the calendar
 
 ## Features
 
 - Image upload to Supabase Storage
 - Bulk edit titles and descriptions
 - Calendar view of scheduled posts
-- Manual posting with daily limit (6 posts/day)
+- Daily scheduling limit: 6 pins/day.
 - OAuth authentication with Pinterest
 
 ## Pinterest Developer Guidelines Compliance
@@ -85,7 +85,7 @@ This application is fully compliant with Pinterest's Developer Guidelines:
 ### 2. User Intent & Control
 - ✅ **Explicit user confirmation**: Users must confirm bulk edits and scheduling actions
 - ✅ **Individual review**: Each pin requires title, description, and board selection before scheduling
-- ✅ **Manual posting only**: Pins are not auto-posted; users must manually trigger each post
+- ✅ **Content planning**: Plan your pins in advance with a clear scheduling calendar
 - ✅ **Daily limits enforced**: Maximum 6 posts per day to prevent spam
 
 ### 3. Attribution & Source Linking
@@ -100,7 +100,7 @@ This application is fully compliant with Pinterest's Developer Guidelines:
 - ✅ **User rights**: Users can disconnect Pinterest and delete their data at any time
 
 ### 5. API Usage
-- ✅ **Token refresh**: Automatic token refresh when needed
+- ✅ **Token refresh**: Seamless token refresh when needed
 - ✅ **Error handling**: Graceful handling of API errors and rate limits
 - ✅ **Scope compliance**: Only requests necessary permissions (read/write pins, boards)
 - ✅ **No data resale**: User data is never shared, sold, or used for advertising

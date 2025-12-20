@@ -76,7 +76,7 @@ export default function SettingsPage() {
   return (
     <div>
       <div style={{ marginBottom: '2rem' }}>
-        <h1 style={{ fontSize: '2rem', fontWeight: 700, marginBottom: '0.5rem', color: '#fff' }}>
+        <h1 style={{ fontSize: '2rem', fontWeight: 700, marginBottom: '0.5rem', color: '#d2ccc6' }}>
           Settings
         </h1>
       </div>
@@ -91,13 +91,13 @@ export default function SettingsPage() {
           marginBottom: '2rem',
         }}
       >
-        <h2 style={{ fontSize: '1.25rem', fontWeight: 600, marginBottom: '1.5rem', color: '#fff' }}>
+        <h2 style={{ fontSize: '1.25rem', fontWeight: 600, marginBottom: '1.5rem', color: '#d2ccc6' }}>
           Account
         </h2>
         {user && (
           <div style={{ marginBottom: '1.5rem' }}>
             <div style={{ fontSize: '0.875rem', color: '#999', marginBottom: '0.5rem' }}>Email</div>
-            <div style={{ fontSize: '1rem', color: '#fff', fontWeight: 500 }}>{user.email}</div>
+            <div style={{ fontSize: '1rem', color: '#d2ccc6', fontWeight: 500 }}>{user.email}</div>
           </div>
         )}
         <form action={handleSignOut}>
@@ -108,7 +108,7 @@ export default function SettingsPage() {
               background: '#ef4444',
               border: 'none',
               borderRadius: '6px',
-              color: '#fff',
+              color: '#d2ccc6',
               fontWeight: 600,
               cursor: 'pointer',
               fontSize: '0.9375rem',
@@ -128,7 +128,7 @@ export default function SettingsPage() {
           padding: '2rem',
         }}
       >
-        <h2 style={{ fontSize: '1.25rem', fontWeight: 600, marginBottom: '1.5rem', color: '#fff' }}>
+        <h2 style={{ fontSize: '1.25rem', fontWeight: 600, marginBottom: '1.5rem', color: '#d2ccc6' }}>
           Pinterest Connection
         </h2>
         {loading ? (
@@ -149,7 +149,7 @@ export default function SettingsPage() {
                 />
               )}
               <div>
-                <div style={{ fontSize: '1rem', fontWeight: 600, color: '#fff', marginBottom: '0.25rem' }}>
+                <div style={{ fontSize: '1rem', fontWeight: 600, color: '#d2ccc6', marginBottom: '0.25rem' }}>
                   {userInfo.username ? `@${userInfo.username}` : 'Pinterest Account'}
                 </div>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
@@ -208,7 +208,7 @@ export default function SettingsPage() {
               boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.5)',
             }}
           >
-            <h2 style={{ fontSize: '1.5rem', fontWeight: 700, color: '#fff', marginBottom: '1rem' }}>
+            <h2 style={{ fontSize: '1.5rem', fontWeight: 700, color: '#d2ccc6', marginBottom: '1rem' }}>
               Disconnect Pinterest Account?
             </h2>
             <p style={{ fontSize: '1rem', color: '#e0e0e0', marginBottom: '2rem', lineHeight: '1.6' }}>

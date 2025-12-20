@@ -72,7 +72,7 @@ function PinCard({ pin, allPins, onPostNow, onDelete, formatTime, getDateLabel, 
         onClick={() => onSetViewedPin(pin.id)}
         style={{
           background: '#252525',
-          border: pin.status === 'posted' ? '1px solid #FF006F' : '1px solid #333',
+          border: pin.status === 'posted' ? '1px solid #4A90E2' : '1px solid #333',
           borderRadius: '4px',
           overflow: 'hidden',
           fontSize: '0.65rem',
@@ -105,7 +105,7 @@ function PinCard({ pin, allPins, onPostNow, onDelete, formatTime, getDateLabel, 
               right: 0,
               background: 'linear-gradient(to top, rgba(0, 0, 0, 0.85), rgba(0, 0, 0, 0.5), transparent)',
               padding: '0.4rem',
-              color: '#fff',
+              color: '#d2ccc6',
             }}
           >
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.3rem', marginBottom: '0.2rem' }}>
@@ -148,7 +148,7 @@ function PinCard({ pin, allPins, onPostNow, onDelete, formatTime, getDateLabel, 
             background: 'rgba(0, 0, 0, 0.7)',
             border: 'none',
             borderRadius: '3px',
-            color: '#fff',
+            color: '#d2ccc6',
             fontSize: '0.65rem',
             cursor: 'pointer',
             zIndex: 10,
@@ -221,9 +221,9 @@ function PinCard({ pin, allPins, onPostNow, onDelete, formatTime, getDateLabel, 
                     boxShadow: '0 4px 12px rgba(0, 0, 0, 0.6)',
                   }}
                   onMouseEnter={(e) => {
-                    e.currentTarget.style.background = '#FF006F';
-                    e.currentTarget.style.borderColor = '#FF006F';
-                    e.currentTarget.style.color = '#fff';
+                    e.currentTarget.style.background = '#4A90E2';
+                    e.currentTarget.style.borderColor = '#4A90E2';
+                    e.currentTarget.style.color = '#d2ccc6';
                     e.currentTarget.style.transform = 'translateY(-50%) scale(1.15)';
                   }}
                   onMouseLeave={(e) => {
@@ -264,9 +264,9 @@ function PinCard({ pin, allPins, onPostNow, onDelete, formatTime, getDateLabel, 
                     boxShadow: '0 4px 12px rgba(0, 0, 0, 0.6)',
                   }}
                   onMouseEnter={(e) => {
-                    e.currentTarget.style.background = '#FF006F';
-                    e.currentTarget.style.borderColor = '#FF006F';
-                    e.currentTarget.style.color = '#fff';
+                    e.currentTarget.style.background = '#4A90E2';
+                    e.currentTarget.style.borderColor = '#4A90E2';
+                    e.currentTarget.style.color = '#d2ccc6';
                     e.currentTarget.style.transform = 'translateY(-50%) scale(1.15)';
                   }}
                   onMouseLeave={(e) => {
@@ -308,7 +308,7 @@ function PinCard({ pin, allPins, onPostNow, onDelete, formatTime, getDateLabel, 
               borderRadius: '50%',
               width: '32px',
               height: '32px',
-              color: '#fff',
+              color: '#d2ccc6',
               fontSize: '1.25rem',
               cursor: 'pointer',
               display: 'flex',
@@ -355,7 +355,7 @@ function PinCard({ pin, allPins, onPostNow, onDelete, formatTime, getDateLabel, 
             </div>
 
             {pin.title && (
-              <h3 style={{ fontSize: '1.25rem', fontWeight: 600, marginBottom: '0.75rem', color: '#fff' }}>
+              <h3 style={{ fontSize: '1.25rem', fontWeight: 600, marginBottom: '0.75rem', color: '#d2ccc6' }}>
                 {pin.title}
               </h3>
             )}
@@ -378,10 +378,10 @@ function PinCard({ pin, allPins, onPostNow, onDelete, formatTime, getDateLabel, 
                   disabled={isPosting || postSuccess}
                   style={{
                     padding: '0.75rem 1.5rem',
-                    background: postSuccess ? '#22c55e' : (isPosting ? '#555' : '#FF006F'),
+                    background: postSuccess ? '#22c55e' : (isPosting ? '#555' : '#4A90E2'),
                     border: 'none',
                     borderRadius: '6px',
-                    color: '#fff',
+                    color: '#d2ccc6',
                     fontSize: '0.875rem',
                     fontWeight: 600,
                     cursor: (isPosting || postSuccess) ? 'not-allowed' : 'pointer',
@@ -556,7 +556,7 @@ export default function CalendarView({ pins, onRefresh }: CalendarViewProps) {
       case 'failed':
         return '#ef4444';
       default:
-        return '#FF006F';
+        return '#4A90E2';
     }
   };
 
@@ -780,7 +780,7 @@ export default function CalendarView({ pins, onRefresh }: CalendarViewProps) {
     <div>
       <div style={{ marginBottom: '1rem', padding: '0.75rem', background: '#252525', borderRadius: '7px', border: '1px solid #333' }}>
         <p style={{ fontSize: '1.0125rem', color: '#999', margin: 0, lineHeight: '1.4' }}>
-          Pins are not posted automatically, you need to post them manually in order for it to work. You can't post more than 6 pins per day.
+          Plan your pins according to your daily schedule limit (max 6 per day).
         </p>
       </div>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
@@ -790,10 +790,10 @@ export default function CalendarView({ pins, onRefresh }: CalendarViewProps) {
             onClick={() => setViewMode('compact')}
             style={{
               padding: '0.375rem 0.75rem',
-              background: viewMode === 'compact' ? '#FF006F' : 'transparent',
+              background: viewMode === 'compact' ? '#4A90E2' : 'transparent',
               border: 'none',
               borderRadius: '4px',
-              color: viewMode === 'compact' ? '#fff' : '#999',
+              color: viewMode === 'compact' ? '#d2ccc6' : '#999',
               fontSize: '0.75rem',
               fontWeight: viewMode === 'compact' ? 600 : 400,
               cursor: 'pointer',
@@ -806,10 +806,10 @@ export default function CalendarView({ pins, onRefresh }: CalendarViewProps) {
             onClick={() => setViewMode('extended')}
             style={{
               padding: '0.375rem 0.75rem',
-              background: viewMode === 'extended' ? '#FF006F' : 'transparent',
+              background: viewMode === 'extended' ? '#4A90E2' : 'transparent',
               border: 'none',
               borderRadius: '4px',
-              color: viewMode === 'extended' ? '#fff' : '#999',
+              color: viewMode === 'extended' ? '#d2ccc6' : '#999',
               fontSize: '0.75rem',
               fontWeight: viewMode === 'extended' ? 600 : 400,
               cursor: 'pointer',
@@ -830,7 +830,7 @@ export default function CalendarView({ pins, onRefresh }: CalendarViewProps) {
               key={idx}
               style={{
                 background: isToday ? '#252525' : '#191919',
-                border: isToday ? '2px solid #FF006F' : '1px solid #333',
+                border: isToday ? '2px solid #4A90E2' : '1px solid #333',
                 borderRadius: '8px',
                 padding: '0.75rem',
               }}

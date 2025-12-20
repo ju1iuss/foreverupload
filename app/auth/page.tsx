@@ -83,9 +83,20 @@ function AuthPageContent() {
   return (
     <div style={{ minHeight: '100vh', padding: '2rem', maxWidth: '500px', margin: '0 auto', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
       <header style={{ marginBottom: '2rem', textAlign: 'center' }}>
-        <h1 style={{ fontSize: '2rem', fontWeight: 700, marginBottom: '0.5rem', color: '#fff' }}>
-          <span style={{ color: '#FF006F' }}>Pin</span>Upload
-        </h1>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.75rem', marginBottom: '1rem' }}>
+          <img
+            src="/logo.png"
+            alt="ForeverUpload"
+            style={{
+              height: '48px',
+              width: 'auto',
+              objectFit: 'contain',
+            }}
+          />
+          <span style={{ fontSize: '2rem', fontWeight: 700, color: '#d2ccc6' }}>
+            ForeverUpload
+          </span>
+        </div>
         <p style={{ color: '#666', fontSize: '0.9375rem' }}>
           {isSignUp ? 'Create your account' : 'Sign in to your account'}
         </p>
@@ -106,7 +117,7 @@ function AuthPageContent() {
               padding: '0.75rem 1rem',
               borderRadius: '6px',
               marginBottom: '1rem',
-              color: '#fff',
+              color: '#d2ccc6',
               fontSize: '0.875rem',
             }}
           >
@@ -126,7 +137,7 @@ function AuthPageContent() {
               padding: '0.75rem 1rem',
               borderRadius: '6px',
               marginBottom: '1rem',
-              color: '#fff',
+              color: '#d2ccc6',
               fontSize: '0.875rem',
             }}
           >
@@ -160,7 +171,7 @@ function AuthPageContent() {
                 background: '#252525',
                 border: '1px solid #333',
                 borderRadius: '6px',
-                color: '#fff',
+                color: '#d2ccc6',
                 fontSize: '0.9375rem',
                 outline: 'none',
                 transition: 'border-color 0.2s',
@@ -201,7 +212,7 @@ function AuthPageContent() {
                   background: '#252525',
                   border: '1px solid #333',
                   borderRadius: '6px',
-                  color: '#fff',
+                  color: '#d2ccc6',
                   fontSize: '0.9375rem',
                   outline: 'none',
                   transition: 'border-color 0.2s',
@@ -234,7 +245,7 @@ function AuthPageContent() {
                 }}
                 onMouseEnter={(e) => {
                   if (!isPending) {
-                    e.currentTarget.style.color = '#fff';
+                    e.currentTarget.style.color = '#d2ccc6';
                   }
                 }}
                 onMouseLeave={(e) => {
@@ -310,7 +321,7 @@ function AuthPageContent() {
                   width: '18px',
                   height: '18px',
                   cursor: 'pointer',
-                  accentColor: '#FF006F',
+                  accentColor: '#4A90E2',
                 }}
               />
               <span>
@@ -320,7 +331,7 @@ function AuthPageContent() {
                   target="_blank"
                   rel="noopener noreferrer"
                   style={{
-                    color: '#FF006F',
+                    color: '#4A90E2',
                     textDecoration: 'underline',
                   }}
                   onClick={(e) => e.stopPropagation()}
@@ -337,10 +348,10 @@ function AuthPageContent() {
             style={{
               width: '100%',
               padding: '0.75rem',
-              background: isPending ? '#555' : '#FF006F',
+              background: isPending ? '#555' : '#4A90E2',
               border: 'none',
               borderRadius: '6px',
-              color: '#fff',
+              color: '#d2ccc6',
               fontWeight: 600,
               fontSize: '0.9375rem',
               cursor: isPending ? 'not-allowed' : 'pointer',
@@ -349,12 +360,12 @@ function AuthPageContent() {
             }}
             onMouseEnter={(e) => {
               if (!isPending) {
-                e.currentTarget.style.background = '#e6005f';
+                e.currentTarget.style.background = '#357ABD';
               }
             }}
             onMouseLeave={(e) => {
               if (!isPending) {
-                e.currentTarget.style.background = '#FF006F';
+                e.currentTarget.style.background = '#4A90E2';
               }
             }}
           >
@@ -445,7 +456,7 @@ function AuthPageContent() {
         </div>
 
         <div style={{ textAlign: 'center', marginTop: '1rem', fontSize: '0.75rem', color: '#666' }}>
-          By using PinUpload, you agree to our{' '}
+          By using ForeverUpload, you agree to our{' '}
           <a
             href="/privacy"
             target="_blank"
@@ -467,7 +478,7 @@ export default function AuthPage() {
   return (
     <Suspense fallback={
       <div style={{ minHeight: '100vh', padding: '2rem', maxWidth: '500px', margin: '0 auto', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
-        <div style={{ textAlign: 'center', color: '#fff' }}>Loading...</div>
+        <div style={{ textAlign: 'center', color: '#d2ccc6' }}>Loading...</div>
       </div>
     }>
       <AuthPageContent />

@@ -48,7 +48,7 @@ export default function CalendarPage() {
     <div>
       <div style={{ marginBottom: '2rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
         <div>
-          <h1 style={{ fontSize: '2rem', fontWeight: 700, marginBottom: '0.5rem', color: '#fff' }}>
+          <h1 style={{ fontSize: '2rem', fontWeight: 700, marginBottom: '0.5rem', color: '#d2ccc6' }}>
             Content Calendar
           </h1>
           <p style={{ color: '#666', fontSize: '0.9375rem', marginBottom: '0.5rem' }}>
@@ -107,7 +107,7 @@ export default function CalendarPage() {
               fontSize: '1.25rem',
               fontWeight: 600,
               marginBottom: '0.5rem',
-              color: '#fff',
+              color: '#d2ccc6',
             }}
           >
             No scheduled posts yet

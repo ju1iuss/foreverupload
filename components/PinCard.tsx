@@ -111,7 +111,7 @@ export function PinCard({ pin, allPins, onPostNow, onDelete, formatTime, getDate
               right: 0,
               background: 'linear-gradient(to top, rgba(0, 0, 0, 0.85), rgba(0, 0, 0, 0.5), transparent)',
               padding: '0.25rem',
-              color: '#fff',
+              color: '#d2ccc6',
             }}
           >
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.2rem', marginBottom: '0.1rem' }}>
@@ -154,7 +154,7 @@ export function PinCard({ pin, allPins, onPostNow, onDelete, formatTime, getDate
             background: 'rgba(0, 0, 0, 0.7)',
             border: 'none',
             borderRadius: '2px',
-            color: '#fff',
+            color: '#d2ccc6',
             fontSize: '0.5rem',
             cursor: 'pointer',
             zIndex: 10,
@@ -185,7 +185,7 @@ export function PinCard({ pin, allPins, onPostNow, onDelete, formatTime, getDate
             background: 'rgba(0, 0, 0, 0.7)',
             border: 'none',
             borderRadius: '2px',
-            color: '#fff',
+            color: '#d2ccc6',
             fontSize: '0.5rem',
             cursor: 'pointer',
             zIndex: 10,
@@ -253,7 +253,7 @@ export function PinCard({ pin, allPins, onPostNow, onDelete, formatTime, getDate
                     transform: 'translateY(-50%)',
                     background: 'rgba(255, 255, 255, 0.1)',
                     border: '1px solid rgba(255, 255, 255, 0.2)',
-                    color: '#fff',
+                    color: '#d2ccc6',
                     width: '50px',
                     height: '50px',
                     borderRadius: '50%',
@@ -284,7 +284,7 @@ export function PinCard({ pin, allPins, onPostNow, onDelete, formatTime, getDate
                     transform: 'translateY(-50%)',
                     background: 'rgba(255, 255, 255, 0.1)',
                     border: '1px solid rgba(255, 255, 255, 0.2)',
-                    color: '#fff',
+                    color: '#d2ccc6',
                     width: '50px',
                     height: '50px',
                     borderRadius: '50%',
@@ -331,7 +331,7 @@ export function PinCard({ pin, allPins, onPostNow, onDelete, formatTime, getDate
               right: '1rem',
               background: 'rgba(0, 0, 0, 0.5)',
               border: '1px solid rgba(255, 255, 255, 0.1)',
-              color: '#fff',
+              color: '#d2ccc6',
               width: '32px',
               height: '32px',
               borderRadius: '50%',
@@ -402,7 +402,7 @@ export function PinCard({ pin, allPins, onPostNow, onDelete, formatTime, getDate
               <h2 style={{
                 fontSize: '1.75rem',
                 fontWeight: 700,
-                color: '#fff',
+                color: '#d2ccc6',
                 marginBottom: '1rem',
                 lineHeight: '1.2'
               }}>
@@ -440,10 +440,10 @@ export function PinCard({ pin, allPins, onPostNow, onDelete, formatTime, getDate
                   disabled={isPosting || postSuccess || !canPost}
                   style={{
                     padding: '1rem',
-                    background: !canPost ? '#666' : postSuccess ? '#22c55e' : '#FF006F',
+                    background: !canPost ? '#666' : postSuccess ? '#22c55e' : '#4A90E2',
                     border: 'none',
                     borderRadius: '6px',
-                    color: '#fff',
+                    color: '#d2ccc6',
                     fontSize: '1rem',
                     fontWeight: 700,
                     cursor: isPosting || postSuccess || !canPost ? 'not-allowed' : 'pointer',
@@ -457,10 +457,10 @@ export function PinCard({ pin, allPins, onPostNow, onDelete, formatTime, getDate
                     opacity: !canPost ? 0.6 : 1,
                   }}
                   onMouseEnter={(e) => {
-                    if (!isPosting && !postSuccess && canPost) e.currentTarget.style.background = '#e60064';
+                    if (!isPosting && !postSuccess && canPost) e.currentTarget.style.background = '#357ABD';
                   }}
                   onMouseLeave={(e) => {
-                    if (!isPosting && !postSuccess && canPost) e.currentTarget.style.background = '#FF006F';
+                    if (!isPosting && !postSuccess && canPost) e.currentTarget.style.background = '#4A90E2';
                   }}
                   title={!canPost ? 'Daily limit reached (6 posts/day)' : ''}
                 >
@@ -503,10 +503,10 @@ export function PinCard({ pin, allPins, onPostNow, onDelete, formatTime, getDate
                   rel="noopener noreferrer"
                   style={{
                     padding: '1rem',
-                    background: '#BD081C',
-                    border: 'none',
+                    background: '#252525',
+                    border: '1px solid #333',
                     borderRadius: '6px',
-                    color: '#fff',
+                    color: '#d2ccc6',
                     fontSize: '1rem',
                     fontWeight: 700,
                     cursor: 'pointer',
@@ -519,10 +519,10 @@ export function PinCard({ pin, allPins, onPostNow, onDelete, formatTime, getDate
                     textDecoration: 'none',
                   }}
                   onMouseEnter={(e) => {
-                    e.currentTarget.style.background = '#9a0718';
+                    e.currentTarget.style.background = '#252525';
                   }}
                   onMouseLeave={(e) => {
-                    e.currentTarget.style.background = '#BD081C';
+                    e.currentTarget.style.background = '#252525';
                   }}
                 >
                   <span>View on Pinterest</span>

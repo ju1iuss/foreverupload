@@ -232,7 +232,7 @@ export default function SchedulePage() {
                 background: '#e60023',
                 border: 'none',
                 borderRadius: '24px',
-                color: '#fff',
+                color: '#d2ccc6',
                 fontSize: '1rem',
                 fontWeight: 600,
                 cursor: 'pointer',
@@ -352,7 +352,7 @@ export default function SchedulePage() {
                       zIndex: 10,
                     }}
                   >
-                    {img.selected && <span style={{ color: '#fff', fontSize: '0.75rem' }}>✓</span>}
+                    {img.selected && <span style={{ color: '#d2ccc6', fontSize: '0.75rem' }}>✓</span>}
                   </div>
                   <img
                     src={img.url}
@@ -377,7 +377,7 @@ export default function SchedulePage() {
                         background: '#ef4444',
                         border: 'none',
                         borderRadius: '4px',
-                        color: '#fff',
+                        color: '#d2ccc6',
                         fontSize: '0.75rem',
                         width: '100%',
                       }}
@@ -411,7 +411,7 @@ export default function SchedulePage() {
                 background: saving ? '#555' : '#3b82f6',
                 border: 'none',
                 borderRadius: '6px',
-                color: '#fff',
+                color: '#d2ccc6',
                 fontWeight: 600,
                 cursor: saving ? 'not-allowed' : 'pointer',
               }}

@@ -102,20 +102,20 @@ export default function Sidebar({ userInfo, loading, onConnect }: SidebarProps) 
           padding: '1.5rem',
         }}
       >
-        <h1
-          style={{
-            fontSize: '1.25rem',
-            fontWeight: 700,
-            color: '#fff',
-            margin: 0,
-            display: 'flex',
-            alignItems: 'center',
-            gap: 0,
-          }}
-        >
-          <span style={{ color: '#FF006F' }}>Pin</span>
-          <span>Upload</span>
-        </h1>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+          <img
+            src="/logo.png"
+            alt="ForeverUpload"
+            style={{
+              height: '32px',
+              width: 'auto',
+              objectFit: 'contain',
+            }}
+          />
+          <span style={{ fontSize: '1.25rem', fontWeight: 700, color: '#d2ccc6' }}>
+            ForeverUpload
+          </span>
+        </div>
       </div>
 
       {/* Navigation */}
@@ -139,7 +139,7 @@ export default function Sidebar({ userInfo, loading, onConnect }: SidebarProps) 
                 padding: '0.75rem 1rem',
                 marginBottom: '0.25rem',
                 borderRadius: '8px',
-                color: active ? '#fff' : '#999',
+                color: active ? '#d2ccc6' : '#999',
                 background: active ? '#252525' : 'transparent',
                 textDecoration: 'none',
                 fontSize: '0.9375rem',
@@ -170,7 +170,7 @@ export default function Sidebar({ userInfo, loading, onConnect }: SidebarProps) 
                     top: '20%',
                     height: '60%',
                     width: '3px',
-                    background: '#FF006F',
+                    background: '#4A90E2',
                     borderRadius: '0 4px 4px 0',
                   }}
                 />
@@ -261,7 +261,7 @@ export default function Sidebar({ userInfo, loading, onConnect }: SidebarProps) 
                 }}
                 onMouseEnter={(e) => {
                   e.currentTarget.style.background = '#2a2a2a';
-                  e.currentTarget.style.color = '#fff';
+                  e.currentTarget.style.color = '#d2ccc6';
                 }}
                 onMouseLeave={(e) => {
                   e.currentTarget.style.background = 'transparent';
@@ -300,7 +300,7 @@ export default function Sidebar({ userInfo, loading, onConnect }: SidebarProps) 
                 />
                 <span
                   style={{
-                    color: '#fff',
+                    color: '#d2ccc6',
                     fontSize: '0.875rem',
                     fontWeight: 500,
                   }}

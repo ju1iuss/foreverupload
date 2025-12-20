@@ -247,7 +247,7 @@ export default function UploadPage() {
       `You are about to add ${selectedImages.length} pin(s) to your content pool.\n\n` +
       `Board: ${selectedBoard?.name || boardId}\n\n` +
       `Please confirm that you have reviewed each pin's title, description, and link.\n\n` +
-      `These pins will be queued for manual posting (max 6 per day).`;
+      `Added to schedule queue. Daily limit: 6 pins/day.`;
     
     if (!window.confirm(confirmMessage)) {
       return;
@@ -329,7 +329,7 @@ export default function UploadPage() {
     <div>
       <div style={{ marginBottom: '2rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
         <div>
-          <h1 style={{ fontSize: '2rem', fontWeight: 700, marginBottom: '0.5rem', color: '#fff' }}>
+          <h1 style={{ fontSize: '2rem', fontWeight: 700, marginBottom: '0.5rem', color: '#d2ccc6' }}>
             Content
           </h1>
           <p style={{ color: '#666', fontSize: '0.9375rem' }}>
@@ -435,7 +435,7 @@ export default function UploadPage() {
                       height: '4px', 
                       background: collection.color 
                     }} />
-                    <div style={{ fontSize: '0.875rem', fontWeight: 600, color: '#fff', marginBottom: '0.25rem' }}>
+                    <div style={{ fontSize: '0.875rem', fontWeight: 600, color: '#d2ccc6', marginBottom: '0.25rem' }}>
                       {collection.name}
                     </div>
                     <div style={{ fontSize: '0.75rem', color: '#666' }}>
@@ -596,7 +596,7 @@ export default function UploadPage() {
                           border: img.selected ? 'none' : '1px solid rgba(255, 255, 255, 0.3)',
                         }}
                       >
-                        {img.selected && <span style={{ color: '#fff', fontSize: '0.7rem', fontWeight: 'bold' }}>✓</span>}
+                        {img.selected && <span style={{ color: '#d2ccc6', fontSize: '0.7rem', fontWeight: 'bold' }}>✓</span>}
                       </div>
                       <button
                         onClick={(e) => {
@@ -622,7 +622,7 @@ export default function UploadPage() {
                         }}
                         onMouseEnter={(e) => {
                           e.currentTarget.style.background = 'rgba(0, 0, 0, 0.8)';
-                          e.currentTarget.style.color = '#fff';
+                          e.currentTarget.style.color = '#d2ccc6';
                         }}
                         onMouseLeave={(e) => {
                           e.currentTarget.style.background = 'rgba(0, 0, 0, 0.6)';
@@ -641,7 +641,7 @@ export default function UploadPage() {
                       </button>
                       <div style={{ padding: '0.5rem' }}>
                         {img.title && (
-                          <div style={{ fontSize: '0.75rem', fontWeight: 600, marginBottom: '0.2rem', color: '#fff' }}>
+                          <div style={{ fontSize: '0.75rem', fontWeight: 600, marginBottom: '0.2rem', color: '#d2ccc6' }}>
                             {img.title}
                           </div>
                         )}
@@ -878,7 +878,7 @@ export default function UploadPage() {
               border: '1px solid #333',
             }}
           >
-            <h2 style={{ fontSize: '1.25rem', fontWeight: 700, color: '#fff', marginBottom: '1.5rem' }}>
+            <h2 style={{ fontSize: '1.25rem', fontWeight: 700, color: '#d2ccc6', marginBottom: '1.5rem' }}>
               Create New Board
             </h2>
 
@@ -994,7 +994,7 @@ export default function UploadPage() {
                   background: !newBoardName.trim() || creatingBoard ? '#333' : '#4A90E2',
                   border: 'none',
                   borderRadius: '6px',
-                  color: '#fff',
+                  color: '#d2ccc6',
                   fontSize: '0.875rem',
                   fontWeight: 600,
                   cursor: !newBoardName.trim() || creatingBoard ? 'not-allowed' : 'pointer',
