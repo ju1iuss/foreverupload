@@ -87,17 +87,12 @@ export default function ContentPoolPage() {
       }
       const boardsResponse = await fetch('/api/pinterest/boards');
       if (!boardsResponse.ok) {
-        if (boardsResponse.status === 401 || boardsResponse.status === 403) {
-          const recheckResponse = await fetch('/api/pinterest/user');
-          if (recheckResponse.ok) {
-            const recheckData = await recheckResponse.json();
-            if (!recheckData.authenticated) {
-              setIsAuthenticated(false);
-              setBoards([]);
-              setLoadingBoards(false);
-              return;
-            }
-          }
+        const errData = await boardsResponse.json().catch(() => ({}));
+        if (errData.code === 'not_connected' || errData.code === 'token_expired') {
+          setIsAuthenticated(false);
+          setBoards([]);
+          setLoadingBoards(false);
+          return;
         }
         setBoards([]);
         setLoadingBoards(false);
@@ -143,7 +138,13 @@ export default function ContentPoolPage() {
         }),
       });
       if (!response.ok) {
-        const errorData = await response.json();
+        const errorData = await response.json().catch(() => ({}));
+        if (errorData.code === 'token_expired' || errorData.code === 'not_connected') {
+          setIsAuthenticated(false);
+          setShowCreateBoardModal(false);
+          alert('Your Pinterest connection has expired. Please reconnect your account.');
+          return;
+        }
         throw new Error(errorData.error || 'Failed to create board');
       }
       const data = await response.json();
@@ -356,13 +357,14 @@ export default function ContentPoolPage() {
         alert('You must be logged in to schedule pins');
         return;
       }
-      // Get all pending posts with their scheduled_at times
+      // Get all pending posts that have a scheduled_at (only these count toward daily limits)
       const { data: pendingPosts } = await supabase
         .from('pin_scheduled')
-        .select('scheduled_at, created_at')
+        .select('scheduled_at')
         .eq('status', 'pending')
         .eq('user_id', user.id)
-        .order('scheduled_at', { ascending: true, nullsFirst: false });
+        .not('scheduled_at', 'is', null)
+        .order('scheduled_at', { ascending: true });
       
       const now = new Date();
       const today = new Date(now);
@@ -374,8 +376,7 @@ export default function ContentPoolPage() {
       // Count posts per day to find available slots
       const postsPerDay = new Map<string, number>();
       (pendingPosts || []).forEach(post => {
-        const scheduleDate = new Date(post.scheduled_at || post.created_at);
-        const dateKey = scheduleDate.toISOString().split('T')[0];
+        const dateKey = new Date(post.scheduled_at).toISOString().split('T')[0];
         postsPerDay.set(dateKey, (postsPerDay.get(dateKey) || 0) + 1);
       });
       

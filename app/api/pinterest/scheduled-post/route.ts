@@ -1,5 +1,90 @@
-import { createClient } from '@/lib/supabase-server';
+import { createClient, createAdminClient } from '@/lib/supabase-server';
 import { NextRequest, NextResponse } from 'next/server';
+
+const DAILY_LIMIT = 6;
+const CRON_HOURS = [8, 9, 10, 11, 12, 13];
+
+/**
+ * Assigns scheduled_at to any pending pins that are missing it.
+ * Runs as a preprocessing step before posting so no pin is ever stuck without a time.
+ */
+async function assignMissingScheduledAt(adminSupabase: ReturnType<typeof createAdminClient>) {
+  const { data: nullPins, error } = await adminSupabase
+    .from('pin_scheduled')
+    .select('id, user_id, created_at')
+    .eq('status', 'pending')
+    .is('scheduled_at', null);
+
+  if (error || !nullPins || nullPins.length === 0) return;
+
+  const now = new Date();
+  const today = new Date(now);
+  today.setHours(0, 0, 0, 0);
+
+  // Group by user
+  const byUser = new Map<string, typeof nullPins>();
+  for (const pin of nullPins) {
+    if (!byUser.has(pin.user_id)) byUser.set(pin.user_id, []);
+    byUser.get(pin.user_id)!.push(pin);
+  }
+
+  for (const [userId, pins] of Array.from(byUser)) {
+    // Count already-scheduled pending pins per day for this user
+    const { data: existing } = await adminSupabase
+      .from('pin_scheduled')
+      .select('scheduled_at')
+      .eq('user_id', userId)
+      .eq('status', 'pending')
+      .not('scheduled_at', 'is', null);
+
+    const postsPerDay = new Map<string, number>();
+
+    // Count today's already-posted pins so we don't double-count
+    const { count: postedToday } = await adminSupabase
+      .from('pin_scheduled')
+      .select('*', { count: 'exact', head: true })
+      .eq('user_id', userId)
+      .eq('status', 'posted')
+      .gte('posted_at', today.toISOString());
+
+    postsPerDay.set(today.toISOString().split('T')[0], postedToday || 0);
+
+    for (const p of existing || []) {
+      const dateKey = new Date(p.scheduled_at).toISOString().split('T')[0];
+      postsPerDay.set(dateKey, (postsPerDay.get(dateKey) || 0) + 1);
+    }
+
+    for (const pin of pins) {
+      // Find the next available slot starting tomorrow
+      let chosenDay: Date | null = null;
+      let positionInDay = 0;
+
+      for (let offset = 1; offset < 365; offset++) {
+        const day = new Date(today);
+        day.setDate(today.getDate() + offset);
+        const key = day.toISOString().split('T')[0];
+        const count = postsPerDay.get(key) || 0;
+        if (count < DAILY_LIMIT) {
+          chosenDay = day;
+          positionInDay = count;
+          postsPerDay.set(key, count + 1);
+          break;
+        }
+      }
+
+      if (!chosenDay) continue;
+
+      chosenDay.setHours(CRON_HOURS[Math.min(positionInDay, 5)] ?? 8, 0, 0, 0);
+
+      await adminSupabase
+        .from('pin_scheduled')
+        .update({ scheduled_at: chosenDay.toISOString() })
+        .eq('id', pin.id);
+    }
+  }
+
+  console.log(`assignMissingScheduledAt: fixed ${nullPins.length} pins`);
+}
 
 async function refreshAccessToken(refreshToken: string, userId: string, supabase: any) {
   const clientId = process.env.PINTEREST_CLIENT_ID;
@@ -93,7 +178,15 @@ export async function POST(request: NextRequest) {
   try {
     const supabase = await createClient();
     const now = new Date();
-    
+
+    // Fix any pending pins that are missing scheduled_at before processing
+    try {
+      const adminSupabase = createAdminClient();
+      await assignMissingScheduledAt(adminSupabase);
+    } catch (e) {
+      console.error('assignMissingScheduledAt error (non-fatal):', e);
+    }
+
     // Get all pending pins that are scheduled to be posted now or in the past
     // If scheduled_at is null, use created_at as fallback for backward compatibility
     const { data: allPins, error: fetchError } = await supabase

@@ -69,36 +69,14 @@ export default function UploadPage() {
       const boardsResponse = await fetch('/api/pinterest/boards');
 
       if (!boardsResponse.ok) {
-        // If boards fetch fails, check auth again - connection might have been deleted
-        if (boardsResponse.status === 401 || boardsResponse.status === 403) {
-          const recheckResponse = await fetch('/api/pinterest/user');
-          if (recheckResponse.ok) {
-            const recheckData = await recheckResponse.json();
-            if (!recheckData.authenticated) {
-              setIsAuthenticated(false);
-              setBoards([]);
-              setLoadingBoards(false);
-              return;
-            }
-          }
+        const errData = await boardsResponse.json().catch(() => ({}));
+        if (errData.code === 'not_connected' || errData.code === 'token_expired') {
+          setIsAuthenticated(false);
+          setBoards([]);
+          setLoadingBoards(false);
+          return;
         }
-        
-        let errorData: any = {};
-        try {
-          const errorText = await boardsResponse.text();
-          if (errorText) {
-            try {
-              errorData = JSON.parse(errorText);
-            } catch {
-              errorData = { error: errorText || `HTTP ${boardsResponse.status}` };
-            }
-          } else {
-            errorData = { error: `HTTP ${boardsResponse.status}: Empty response` };
-          }
-        } catch (e) {
-          errorData = { error: `HTTP ${boardsResponse.status}: Failed to read error response` };
-        }
-        console.error('Failed to fetch boards:', errorData);
+        console.error('Failed to fetch boards:', errData);
         setBoards([]);
         setLoadingBoards(false);
         return;
@@ -152,7 +130,13 @@ export default function UploadPage() {
       });
 
       if (!response.ok) {
-        const errorData = await response.json();
+        const errorData = await response.json().catch(() => ({}));
+        if (errorData.code === 'token_expired' || errorData.code === 'not_connected') {
+          setIsAuthenticated(false);
+          setShowCreateBoardModal(false);
+          alert('Your Pinterest connection has expired. Please reconnect your account.');
+          return;
+        }
         throw new Error(errorData.error || 'Failed to create board');
       }
 

@@ -54,19 +54,23 @@ export async function GET(request: NextRequest) {
       .maybeSingle();
 
     if (!authData) {
-      return NextResponse.json({ error: 'Not connected' }, { status: 401 });
+      return NextResponse.json({ error: 'Pinterest not connected', code: 'not_connected' }, { status: 401 });
     }
 
     let accessToken = authData.access_token;
     
-    // Refresh token if needed (only if using database auth)
+    // Refresh token if expired
     if (authData && new Date(authData.expires_at) <= new Date()) {
       const refreshed = await refreshAccessToken(authData.refresh_token, user.id, supabase);
-      if (refreshed) accessToken = refreshed;
+      if (refreshed) {
+        accessToken = refreshed;
+      } else {
+        return NextResponse.json({ error: 'Pinterest token expired. Please reconnect your account.', code: 'token_expired' }, { status: 401 });
+      }
     }
 
     if (!accessToken) {
-      return NextResponse.json({ error: 'Token not available' }, { status: 401 });
+      return NextResponse.json({ error: 'Pinterest token not available', code: 'token_expired' }, { status: 401 });
     }
 
     const boardsEndpoint = 'https://api.pinterest.com/v5/boards?page_size=250';
@@ -79,6 +83,9 @@ export async function GET(request: NextRequest) {
 
     if (!boardsResponse.ok) {
       const errorText = await boardsResponse.text();
+      if (boardsResponse.status === 401) {
+        return NextResponse.json({ error: 'Pinterest token invalid. Please reconnect your account.', code: 'token_expired' }, { status: 401 });
+      }
       return NextResponse.json({ error: 'Failed to fetch boards', details: errorText }, { status: boardsResponse.status });
     }
 
