@@ -57,9 +57,12 @@ export async function middleware(request: NextRequest) {
   const { data: { user } } = await supabase.auth.getUser();
   console.log(`Middleware: ${request.nextUrl.pathname} - User: ${user?.email || 'none'}`);
 
-  const host = request.headers.get('host');
-  const protocol = request.headers.get('x-forwarded-proto') || 'http';
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || `${protocol}://${host}`;
+  const host = request.headers.get('host')?.trim();
+  const protocol = (request.headers.get('x-forwarded-proto') || 'http').trim();
+  // In dev, always use localhost if host is localhost
+  const siteUrl = (host?.includes('localhost') || host?.includes('127.0.0.1')) 
+    ? `${protocol}://${host}`.trim()
+    : (process.env.NEXT_PUBLIC_SITE_URL?.trim() || `${protocol}://${host}`.trim());
 
   const isAuthPage = request.nextUrl.pathname === '/auth';
   const isLandingPage = request.nextUrl.pathname === '/';

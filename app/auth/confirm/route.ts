@@ -12,9 +12,12 @@ export async function GET(request: NextRequest) {
   const email = searchParams.get('email');
   const next = searchParams.get('next') ?? '/dashboard';
 
-  const host = request.headers.get('host');
-  const protocol = request.headers.get('x-forwarded-proto') || 'http';
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || `${protocol}://${host}`;
+  const host = request.headers.get('host')?.trim();
+  const protocol = (request.headers.get('x-forwarded-proto') || 'http').trim();
+  // In dev, always use localhost if host is localhost
+  const siteUrl = (host?.includes('localhost') || host?.includes('127.0.0.1')) 
+    ? `${protocol}://${host}`.trim()
+    : (process.env.NEXT_PUBLIC_SITE_URL?.trim() || `${protocol}://${host}`.trim());
 
   const redirectTo = new URL(next, siteUrl);
   redirectTo.searchParams.delete('token_hash');

@@ -9,8 +9,6 @@ interface UserInfo {
   authenticated: boolean;
   username?: string;
   profileImage?: string;
-  isSandbox?: boolean;
-  sandboxAvailable?: boolean;
 }
 
 interface SidebarProps {
@@ -37,13 +35,13 @@ export default function Sidebar({ userInfo, loading, onConnect }: SidebarProps) 
       ),
     },
     {
-      name: 'Content Pool',
-      path: '/content-pool',
+      name: 'Calendar',
+      path: '/calendar',
       icon: (
         <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
           <path
             fillRule="evenodd"
-            d="M4 3a1 1 0 00-1 1v4a1 1 0 001 1h4a1 1 0 001-1V4a1 1 0 00-1-1H4zm1 2v2h2V5H5zm7-2a1 1 0 00-1 1v4a1 1 0 001 1h4a1 1 0 001-1V4a1 1 0 00-1-1h-4zm1 2v2h2V5h-2zM3 12a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1H4a1 1 0 01-1-1v-4zm2 1v2h2v-2H5zm6-1a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1h-4a1 1 0 01-1-1v-4zm2 1v2h2v-2h-2z"
+            d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z"
             clipRule="evenodd"
             fill="currentColor"
           />
@@ -69,7 +67,7 @@ export default function Sidebar({ userInfo, loading, onConnect }: SidebarProps) 
   // Aggressively prefetch all routes on mount for instant navigation
   useEffect(() => {
     router.prefetch('/dashboard');
-    router.prefetch('/content-pool');
+    router.prefetch('/calendar');
     router.prefetch('/settings');
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [router]);
@@ -229,7 +227,7 @@ export default function Sidebar({ userInfo, loading, onConnect }: SidebarProps) 
                     width: '8px',
                     height: '8px',
                     borderRadius: '50%',
-                    background: userInfo.isSandbox ? '#f59e0b' : '#22c55e',
+                    background: '#22c55e',
                     flexShrink: 0,
                   }}
                 />
@@ -242,7 +240,7 @@ export default function Sidebar({ userInfo, loading, onConnect }: SidebarProps) 
                     letterSpacing: '0.5px',
                   }}
                 >
-                  {userInfo.isSandbox ? 'Sandbox Mode' : 'Connected'}
+                  Connected
                 </span>
               </div>
               <Link

@@ -247,7 +247,8 @@ export default function UploadPage() {
       `You are about to add ${selectedImages.length} pin(s) to your content pool.\n\n` +
       `Board: ${selectedBoard?.name || boardId}\n\n` +
       `Please confirm that you have reviewed each pin's title, description, and link.\n\n` +
-      `Added to schedule queue. Daily limit: 6 pins/day.`;
+      `Added to schedule queue. Daily limit: 6 pins/day.\n\n` +
+      `Scheduled pins post to Pinterest automatically at the times you set. You are actively choosing when each pin goes live.`;
     
     if (!window.confirm(confirmMessage)) {
       return;
@@ -263,47 +264,87 @@ export default function UploadPage() {
         return;
       }
 
-      // Get all pending posts for THIS user to calculate queue position
+      // Get all pending posts with their scheduled_at times
       const { data: pendingPosts } = await supabase
         .from('pin_scheduled')
-        .select('created_at')
+        .select('scheduled_at, created_at')
         .eq('status', 'pending')
         .eq('user_id', user.id)
-        .order('created_at', { ascending: true });
+        .order('scheduled_at', { ascending: true, nullsFirst: false });
 
       const now = new Date();
       const today = new Date(now);
       today.setHours(0, 0, 0, 0);
-      const tomorrow = new Date(today);
-      tomorrow.setDate(tomorrow.getDate() + 1);
-      tomorrow.setHours(8, 0, 0, 0);
 
-      const currentPendingCount = pendingPosts?.length || 0;
+      // Count posts per day to find available slots
+      const postsPerDay = new Map<string, number>();
+      (pendingPosts || []).forEach(post => {
+        const scheduleDate = new Date(post.scheduled_at || post.created_at);
+        const dateKey = scheduleDate.toISOString().split('T')[0];
+        postsPerDay.set(dateKey, (postsPerDay.get(dateKey) || 0) + 1);
+      });
+
+      // Also count posts already posted today
+      const todayStr = today.toISOString().split('T')[0];
+      const { count: postedToday } = await supabase
+        .from('pin_scheduled')
+        .select('*', { count: 'exact', head: true })
+        .eq('user_id', user.id)
+        .eq('status', 'posted')
+        .gte('posted_at', today.toISOString());
       
-      let baseCreatedAt: Date;
-      if (currentPendingCount === 0) {
-        baseCreatedAt = tomorrow;
-      } else {
-        const daysFromToday = Math.floor(currentPendingCount / 6);
-        baseCreatedAt = new Date(tomorrow);
-        baseCreatedAt.setDate(tomorrow.getDate() + daysFromToday);
-        baseCreatedAt.setHours(8, 0, 0, 0);
-      }
+      postsPerDay.set(todayStr, (postsPerDay.get(todayStr) || 0) + (postedToday || 0));
 
-      // Create posts with user_id
+      // Create posts distributed across days with available slots (max 6 per day)
+      const DAILY_LIMIT = 6;
+      const CRON_HOURS = [8, 9, 10, 11, 12, 13]; // 6 slots for 6 pins/day
       const pinsToCreate = selectedImages.map((img, index) => {
-        const postDate = new Date(baseCreatedAt);
-        const hourOffset = (currentPendingCount + index) % 6;
-        postDate.setHours(8 + hourOffset, 0, 0, 0);
+        // Find the next available day with less than 6 posts
+        let currentDay = new Date(today);
+        let positionInDay = 0;
+        
+        for (let dayOffset = 0; dayOffset < 365; dayOffset++) {
+          const checkDate = new Date(today);
+          checkDate.setDate(today.getDate() + dayOffset);
+          const dateKey = checkDate.toISOString().split('T')[0];
+          const postsOnDay = postsPerDay.get(dateKey) || 0;
+          
+          // If it's today, we only schedule if it's still early enough
+          if (postsOnDay < DAILY_LIMIT) {
+            currentDay = checkDate;
+            positionInDay = postsOnDay;
+            
+            // If scheduling for today, make sure we don't schedule in the past
+            // Last slot is hour 13 (6 pins: 8,9,10,11,12,13)
+            if (dayOffset === 0) {
+              const currentHour = now.getHours();
+              const startHour = Math.max(8, currentHour + 1);
+              if (startHour + (positionInDay - (postedToday || 0)) >= 14) {
+                // Too late today, skip to tomorrow
+                continue;
+              }
+            }
+
+            // Mark this slot as taken for next iteration
+            postsPerDay.set(dateKey, postsOnDay + 1);
+            break;
+          }
+        }
+        
+        // Set time based on position in day (hours 8-13, 6 slots)
+        const hour = CRON_HOURS[Math.min(positionInDay, 5)] ?? 8;
+        currentDay.setHours(hour, 0, 0, 0);
         
         return {
-          user_id: user.id, // Set the user_id!
+          user_id: user.id,
           image_url: img.url,
           title: img.title,
           description: img.description,
-          board_id: boardId, // board_id is now required since we fetch from production API
+          link: img.link || null,
+          board_id: boardId,
           status: 'pending',
-          created_at: postDate.toISOString(),
+          scheduled_at: currentDay.toISOString(),
+          created_at: new Date().toISOString(),
         };
       });
 
@@ -333,7 +374,7 @@ export default function UploadPage() {
             Content
           </h1>
           <p style={{ color: '#666', fontSize: '0.9375rem' }}>
-            Upload images and schedule them to be posted to Pinterest
+            Upload images and schedule them to be posted to Pinterest at the times you choose.
           </p>
         </div>
         {isAuthenticated && (

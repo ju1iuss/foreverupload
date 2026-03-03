@@ -356,40 +356,65 @@ export default function ContentPoolPage() {
         alert('You must be logged in to schedule pins');
         return;
       }
+      // Get all pending posts with their scheduled_at times
       const { data: pendingPosts } = await supabase
         .from('pin_scheduled')
-        .select('created_at')
+        .select('scheduled_at, created_at')
         .eq('status', 'pending')
         .eq('user_id', user.id)
-        .order('created_at', { ascending: true });
+        .order('scheduled_at', { ascending: true, nullsFirst: false });
+      
       const now = new Date();
       const today = new Date(now);
       today.setHours(0, 0, 0, 0);
       const tomorrow = new Date(today);
       tomorrow.setDate(tomorrow.getDate() + 1);
       tomorrow.setHours(8, 0, 0, 0);
-      const currentPendingCount = pendingPosts?.length || 0;
-      let baseCreatedAt: Date;
-      if (currentPendingCount === 0) {
-        baseCreatedAt = tomorrow;
-      } else {
-        const daysFromToday = Math.floor(currentPendingCount / 6);
-        baseCreatedAt = new Date(tomorrow);
-        baseCreatedAt.setDate(tomorrow.getDate() + daysFromToday);
-        baseCreatedAt.setHours(8, 0, 0, 0);
-      }
+      
+      // Count posts per day to find available slots
+      const postsPerDay = new Map<string, number>();
+      (pendingPosts || []).forEach(post => {
+        const scheduleDate = new Date(post.scheduled_at || post.created_at);
+        const dateKey = scheduleDate.toISOString().split('T')[0];
+        postsPerDay.set(dateKey, (postsPerDay.get(dateKey) || 0) + 1);
+      });
+      
+      // Create posts distributed across days with available slots (max 6 per day)
+      const DAILY_LIMIT = 6;
+      const CRON_HOURS = [8, 9, 10, 11, 12, 13]; // 6 slots for 6 pins/day
       const pinsToCreate = pendingScheduleData.selectedImages.map((img, index) => {
-        const postDate = new Date(baseCreatedAt);
-        const hourOffset = (currentPendingCount + index) % 6;
-        postDate.setHours(8 + hourOffset, 0, 0, 0);
+        // Find the next available day with less than 6 posts
+        let currentDay = new Date(tomorrow);
+        let positionInDay = 0;
+        
+        for (let dayOffset = 0; dayOffset < 365; dayOffset++) {
+          const checkDate = new Date(tomorrow);
+          checkDate.setDate(tomorrow.getDate() + dayOffset);
+          const dateKey = checkDate.toISOString().split('T')[0];
+          const postsOnDay = postsPerDay.get(dateKey) || 0;
+          
+          if (postsOnDay < DAILY_LIMIT) {
+            currentDay = checkDate;
+            positionInDay = postsOnDay;
+            // Mark this slot as taken for next iteration
+            postsPerDay.set(dateKey, postsOnDay + 1);
+            break;
+          }
+        }
+        
+        // Set time based on position in day (hours 8-13)
+        currentDay.setHours(CRON_HOURS[positionInDay] ?? 8, 0, 0, 0);
+        
         return {
           user_id: user.id,
           image_url: img.url,
           title: img.title,
           description: img.description,
+          link: img.link || null,
           board_id: confirmedBoardId,
           status: 'pending',
-          created_at: postDate.toISOString(),
+          scheduled_at: currentDay.toISOString(),
+          created_at: new Date().toISOString(),
         };
       });
       const { error } = await supabase.from('pin_scheduled').insert(pinsToCreate);
@@ -412,6 +437,8 @@ export default function ContentPoolPage() {
   };
 
   const handleCloseModal = () => {
+    // Don't close while images are still uploading
+    if (uploadingFiles || (uploadProgress.total > 0 && uploadProgress.uploaded < uploadProgress.total)) return;
     setShowUploadModal(false);
     setImages([]);
     setBoardId('');
@@ -448,7 +475,7 @@ export default function ContentPoolPage() {
             Content Pool
           </h1>
           <p style={{ color: '#666', fontSize: '0.9375rem', marginBottom: '0.5rem' }}>
-            All your Pinterest content in one place
+            All your Pinterest content in one place. Scheduled pins post to Pinterest at the times you choose.
           </p>
         </div>
         <Button variant="primary" size="md" onClick={handleUploadClick} disabled={uploadingFiles}>
@@ -530,20 +557,22 @@ export default function ContentPoolPage() {
               </div>
               <button
                 onClick={handleCloseModal}
+                disabled={uploadingFiles || (uploadProgress.total > 0 && uploadProgress.uploaded < uploadProgress.total)}
+                title={uploadingFiles ? 'Uploading in progress...' : undefined}
                 style={{
                   background: 'transparent',
                   border: 'none',
-                  color: '#999',
+                  color: (uploadingFiles || (uploadProgress.total > 0 && uploadProgress.uploaded < uploadProgress.total)) ? '#444' : '#999',
                   fontSize: '1.5rem',
-                  cursor: 'pointer',
+                  cursor: (uploadingFiles || (uploadProgress.total > 0 && uploadProgress.uploaded < uploadProgress.total)) ? 'not-allowed' : 'pointer',
                   padding: '0.5rem',
                   lineHeight: 1,
                 }}
                 onMouseEnter={(e) => {
-                  e.currentTarget.style.color = '#d2ccc6';
+                  if (!uploadingFiles) e.currentTarget.style.color = '#d2ccc6';
                 }}
                 onMouseLeave={(e) => {
-                  e.currentTarget.style.color = '#999';
+                  if (!uploadingFiles) e.currentTarget.style.color = '#999';
                 }}
               >
                 ×
@@ -874,7 +903,7 @@ export default function ContentPoolPage() {
                         {dropdownOpen && (
                           <>
                             <div
-                              onClick={() => setDropdownOpen(false)}
+                              onClick={(e) => { e.stopPropagation(); setDropdownOpen(false); }}
                               style={{
                                 position: 'fixed',
                                 top: 0,
@@ -1197,8 +1226,11 @@ export default function ContentPoolPage() {
                 Please confirm that you have reviewed each pin's title, description, and link.
               </p>
               
-              <p style={{ fontSize: '0.9375rem', color: '#999', lineHeight: '1.6' }}>
+              <p style={{ fontSize: '0.9375rem', color: '#999', marginBottom: '0.5rem', lineHeight: '1.6' }}>
                 Added to schedule queue. Daily limit: 6 pins/day.
+              </p>
+              <p style={{ fontSize: '0.8125rem', color: '#666', lineHeight: '1.5' }}>
+                Scheduled pins are posted to Pinterest automatically at the times you set. You are actively choosing when each pin goes live.
               </p>
             </div>
 

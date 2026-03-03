@@ -16,16 +16,10 @@ export async function GET(request: NextRequest) {
       .eq('user_id', user.id)
       .maybeSingle();
 
-    const sandboxToken = process.env.PINTEREST_SANDBOX_TOKEN;
-
-    // Return authenticated: true ONLY if they have their own token
-    // sandboxToken is just a fallback for the API, not for the session status
     return NextResponse.json({
       authenticated: !!authData?.access_token,
-      username: authData?.pinterest_username || (sandboxToken ? 'Sandbox User' : null),
+      username: authData?.pinterest_username || null,
       profileImage: authData?.pinterest_profile_image || null,
-      isSandbox: !authData?.access_token && !!sandboxToken,
-      sandboxAvailable: !!sandboxToken
     });
   } catch (error) {
     console.error('Error in /api/pinterest/user:', error);

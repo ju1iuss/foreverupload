@@ -1,0 +1,9 @@
+{
+  "crons": [
+    {
+      "path": "/api/pinterest/scheduled-post",
+      "schedule": "*/15 * * * *"
+    }
+  ]
+}
+

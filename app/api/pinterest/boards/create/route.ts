@@ -22,20 +22,18 @@ export async function POST(request: NextRequest) {
       .eq('user_id', user.id)
       .maybeSingle();
 
-    const sandboxToken = process.env.PINTEREST_SANDBOX_TOKEN;
-
-    if (!authData && !sandboxToken) {
+    if (!authData) {
       return NextResponse.json({ error: 'Not connected' }, { status: 401 });
     }
 
-    const accessToken = authData?.access_token || sandboxToken;
+    const accessToken = authData.access_token;
 
     if (!accessToken) {
       return NextResponse.json({ error: 'Token not available' }, { status: 401 });
     }
 
-    // Create board in Sandbox
-    const response = await fetch('https://api-sandbox.pinterest.com/v5/boards', {
+    // Create board
+    const response = await fetch('https://api.pinterest.com/v5/boards', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

@@ -20,7 +20,7 @@ async function refreshAccessToken(refreshToken: string, userId: string, supabase
   };
 
   try {
-    const response = await tryRefresh('https://api-sandbox.pinterest.com/v5/oauth/token');
+    const response = await tryRefresh('https://api.pinterest.com/v5/oauth/token');
 
     if (!response.ok) return null;
     const data = await response.json();
@@ -43,40 +43,46 @@ async function refreshAccessToken(refreshToken: string, userId: string, supabase
 async function fetchImageAsBase64(imageUrl: string) {
   try {
     const response = await fetch(imageUrl);
-    if (!response.ok) return null;
+    if (!response.ok) {
+      console.error(`Failed to fetch image: ${response.status} ${response.statusText}`);
+      return null;
+    }
     const arrayBuffer = await response.arrayBuffer();
-    return Buffer.from(arrayBuffer).toString('base64');
+    const contentType = response.headers.get('content-type') || 'image/jpeg';
+    return {
+      base64: Buffer.from(arrayBuffer).toString('base64'),
+      contentType
+    };
   } catch (error) {
+    console.error('Image fetch error:', error);
     return null;
   }
 }
 
-async function createPin(accessToken: string, pin: any, imageBase64: string) {
-  const contentType = pin.image_url.toLowerCase().endsWith('.png') ? 'image/png' : 'image/jpeg';
-  
-  const postPin = async (baseUrl: string) => {
-    const body: any = {
-      board_id: pin.board_id,
-      media_source: { source_type: 'image_base64', content_type: contentType, data: imageBase64 },
-      title: pin.title || '',
-      description: pin.description || '',
-    };
-    
-    if (pin.link) {
-      body.link = pin.link;
-    }
-    
-    return fetch(`${baseUrl}/v5/pins`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${accessToken}`,
-      },
-      body: JSON.stringify(body),
-    });
+async function createPin(accessToken: string, pin: any, imageData: { base64: string, contentType: string }) {
+  const body: any = {
+    board_id: pin.board_id,
+    media_source: { 
+      source_type: 'image_base64', 
+      content_type: imageData.contentType, 
+      data: imageData.base64 
+    },
+    title: pin.title || '',
+    description: pin.description || '',
   };
-
-  const response = await postPin('https://api-sandbox.pinterest.com');
+  
+  if (pin.link) {
+    body.link = pin.link;
+  }
+  
+  const response = await fetch('https://api.pinterest.com/v5/pins', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${accessToken}`,
+    },
+    body: JSON.stringify(body),
+  });
 
   if (!response.ok) return { success: false, error: await response.text() };
   const data = await response.json();
@@ -99,13 +105,11 @@ export async function POST(request: NextRequest) {
       .eq('user_id', user.id)
       .maybeSingle();
 
-    const sandboxToken = process.env.PINTEREST_SANDBOX_TOKEN;
-
-    if (!authData && !sandboxToken) {
+    if (!authData) {
       return NextResponse.json({ error: 'Not connected' }, { status: 401 });
     }
 
-    let accessToken = authData?.access_token || sandboxToken;
+    let accessToken = authData.access_token;
     
     // Refresh token if needed (only if using database auth)
     if (authData && new Date(authData.expires_at) <= new Date()) {
@@ -128,22 +132,29 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Pin not found or already posted' }, { status: 404 });
     }
 
-    const imageBase64 = await fetchImageAsBase64(pin.image_url);
-    if (!imageBase64) {
-      await supabase.from('pin_scheduled').update({ status: 'failed' }).eq('id', pin.id);
+    const imageData = await fetchImageAsBase64(pin.image_url);
+    if (!imageData) {
+      await supabase.from('pin_scheduled').update({ 
+        status: 'failed',
+        error_message: 'Failed to fetch image from URL'
+      }).eq('id', pin.id);
       return NextResponse.json({ error: 'Image fetch failed' }, { status: 500 });
     }
 
-    const result = await createPin(accessToken, pin, imageBase64);
+    const result = await createPin(accessToken, pin, imageData);
     if (result.success) {
       await supabase.from('pin_scheduled').update({
         status: 'posted',
         posted_at: new Date().toISOString(),
         pin_id: result.pinId,
+        error_message: null, // Clear any previous error
       }).eq('id', pin.id);
       return NextResponse.json({ success: true, pinId: result.pinId });
     } else {
-      await supabase.from('pin_scheduled').update({ status: 'failed' }).eq('id', pin.id);
+      await supabase.from('pin_scheduled').update({ 
+        status: 'failed',
+        error_message: result.error || 'Failed to create pin on Pinterest'
+      }).eq('id', pin.id);
       return NextResponse.json({ error: result.error }, { status: 500 });
     }
   } catch (error) {

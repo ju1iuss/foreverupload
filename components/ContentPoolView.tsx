@@ -16,7 +16,7 @@ export default function ContentPoolView({ pins, onRefresh }: ContentPoolViewProp
   );
 
   // Cron runs every hour from 8am to 5pm
-  const CRON_HOURS = [8, 9, 10, 11, 12, 13, 14, 15, 16, 17];
+  const CRON_HOURS = [8, 9, 10, 11, 12, 13];
   const DAILY_LIMIT = 6;
 
   const getNextCronTime = (): Date => {
@@ -213,7 +213,7 @@ export default function ContentPoolView({ pins, onRefresh }: ContentPoolViewProp
     <div>
       <div style={{ marginBottom: '0.75rem', padding: '0.75rem', background: '#191919', borderRadius: '6px', border: '1px solid #333', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
         <p style={{ fontSize: '0.75rem', color: '#999', margin: 0 }}>
-          Plan your pins according to your daily schedule limit.
+          Max 6/day. Pins post to Pinterest at the times you schedule.
         </p>
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
           <span style={{ fontSize: '0.75rem', color: '#999' }}>Daily limit:</span>

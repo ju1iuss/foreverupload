@@ -6,7 +6,7 @@ async function refreshAccessToken(refreshToken: string, userId: string, supabase
   const clientSecret = process.env.PINTEREST_CLIENT_SECRET;
 
   try {
-    const response = await fetch('https://api-sandbox.pinterest.com/v5/oauth/token', {
+    const response = await fetch('https://api.pinterest.com/v5/oauth/token', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded',
@@ -53,13 +53,11 @@ export async function GET(request: NextRequest) {
       .eq('user_id', user.id)
       .maybeSingle();
 
-    const sandboxToken = process.env.PINTEREST_SANDBOX_TOKEN;
-
-    if (!authData && !sandboxToken) {
+    if (!authData) {
       return NextResponse.json({ error: 'Not connected' }, { status: 401 });
     }
 
-    let accessToken = authData?.access_token || sandboxToken;
+    let accessToken = authData.access_token;
     
     // Refresh token if needed (only if using database auth)
     if (authData && new Date(authData.expires_at) <= new Date()) {
@@ -71,7 +69,7 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: 'Token not available' }, { status: 401 });
     }
 
-    const boardsEndpoint = 'https://api-sandbox.pinterest.com/v5/boards?page_size=250';
+    const boardsEndpoint = 'https://api.pinterest.com/v5/boards?page_size=250';
 
     const boardsResponse = await fetch(boardsEndpoint, {
       headers: {

@@ -1,11 +1,432 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import Button from '@/components/Button';
 import { supabase } from '@/lib/supabase';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
+
+// Date Range Picker Component
+function DateRangePicker({
+  startDate,
+  endDate,
+  onRangeChange,
+  presetRange,
+  onPresetChange,
+}: {
+  startDate: Date;
+  endDate: Date;
+  onRangeChange: (start: Date, end: Date) => void;
+  presetRange: '7d' | '30d' | '90d' | 'custom';
+  onPresetChange: (preset: '7d' | '30d' | '90d' | 'custom') => void;
+}) {
+  const [isOpen, setIsOpen] = useState(false);
+  const [viewingMonth, setViewingMonth] = useState(new Date());
+  const [selectingStart, setSelectingStart] = useState(true);
+  const [tempStart, setTempStart] = useState<Date | null>(null);
+  const [tempEnd, setTempEnd] = useState<Date | null>(null);
+  const dropdownRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        setIsOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
+  const formatDateDisplay = (date: Date) => {
+    return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+  };
+
+  const getDisplayText = () => {
+    if (presetRange === '7d') return 'Last 7 Days';
+    if (presetRange === '30d') return 'Last 30 Days';
+    if (presetRange === '90d') return 'Last 90 Days';
+    return `${formatDateDisplay(startDate)} - ${formatDateDisplay(endDate)}`;
+  };
+
+  const getDaysInMonth = (year: number, month: number) => {
+    return new Date(year, month + 1, 0).getDate();
+  };
+
+  const getFirstDayOfMonth = (year: number, month: number) => {
+    return new Date(year, month, 1).getDay();
+  };
+
+  const isSameDay = (d1: Date, d2: Date) => {
+    return d1.getFullYear() === d2.getFullYear() && 
+           d1.getMonth() === d2.getMonth() && 
+           d1.getDate() === d2.getDate();
+  };
+
+  const isInRange = (date: Date) => {
+    const start = tempStart || startDate;
+    const end = tempEnd || endDate;
+    return date >= start && date <= end;
+  };
+
+  const isStartDate = (date: Date) => {
+    const start = tempStart || startDate;
+    return isSameDay(date, start);
+  };
+
+  const isEndDate = (date: Date) => {
+    const end = tempEnd || endDate;
+    return isSameDay(date, end);
+  };
+
+  const handleDateClick = (date: Date) => {
+    if (selectingStart) {
+      setTempStart(date);
+      setTempEnd(null);
+      setSelectingStart(false);
+    } else {
+      if (tempStart && date < tempStart) {
+        setTempStart(date);
+        setTempEnd(tempStart);
+      } else {
+        setTempEnd(date);
+      }
+      setSelectingStart(true);
+    }
+  };
+
+  const handleApply = () => {
+    if (tempStart && tempEnd) {
+      onRangeChange(tempStart, tempEnd);
+      onPresetChange('custom');
+    }
+    setIsOpen(false);
+    setTempStart(null);
+    setTempEnd(null);
+  };
+
+  const handlePresetClick = (preset: '7d' | '30d' | '90d') => {
+    onPresetChange(preset);
+    const end = new Date();
+    const start = new Date();
+    const days = preset === '7d' ? 7 : preset === '30d' ? 30 : 90;
+    start.setDate(start.getDate() - days);
+    onRangeChange(start, end);
+    setIsOpen(false);
+    setTempStart(null);
+    setTempEnd(null);
+  };
+
+  const renderCalendar = () => {
+    const year = viewingMonth.getFullYear();
+    const month = viewingMonth.getMonth();
+    const daysInMonth = getDaysInMonth(year, month);
+    const firstDay = getFirstDayOfMonth(year, month);
+    const today = new Date();
+    today.setHours(23, 59, 59, 999);
+    
+    const days = [];
+    const dayNames = ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'];
+
+    // Day headers
+    for (let i = 0; i < 7; i++) {
+      days.push(
+        <div
+          key={`header-${i}`}
+          style={{
+            textAlign: 'center',
+            fontSize: '0.7rem',
+            color: '#666',
+            padding: '0.25rem',
+            fontWeight: 500,
+          }}
+        >
+          {dayNames[i]}
+        </div>
+      );
+    }
+
+    // Empty cells for days before the first day of the month
+    for (let i = 0; i < firstDay; i++) {
+      days.push(<div key={`empty-${i}`} />);
+    }
+
+    // Days of the month
+    for (let day = 1; day <= daysInMonth; day++) {
+      const date = new Date(year, month, day);
+      const isFuture = date > today;
+      const inRange = !isFuture && isInRange(date);
+      const isStart = isStartDate(date);
+      const isEnd = isEndDate(date);
+      const isToday = isSameDay(date, new Date());
+
+      days.push(
+        <button
+          key={day}
+          onClick={() => !isFuture && handleDateClick(date)}
+          disabled={isFuture}
+          style={{
+            width: '32px',
+            height: '32px',
+            border: 'none',
+            borderRadius: isStart || isEnd ? '6px' : '0',
+            background: isStart || isEnd
+              ? '#4A90E2'
+              : inRange
+              ? 'rgba(74, 144, 226, 0.2)'
+              : 'transparent',
+            color: isFuture 
+              ? '#444' 
+              : isStart || isEnd 
+              ? '#fff' 
+              : isToday 
+              ? '#4A90E2' 
+              : '#d2ccc6',
+            cursor: isFuture ? 'not-allowed' : 'pointer',
+            fontSize: '0.8rem',
+            fontWeight: isStart || isEnd || isToday ? 600 : 400,
+            transition: 'all 0.15s',
+          }}
+          onMouseEnter={(e) => {
+            if (!isFuture && !isStart && !isEnd) {
+              e.currentTarget.style.background = 'rgba(74, 144, 226, 0.3)';
+            }
+          }}
+          onMouseLeave={(e) => {
+            if (!isFuture && !isStart && !isEnd) {
+              e.currentTarget.style.background = inRange
+                ? 'rgba(74, 144, 226, 0.2)'
+                : 'transparent';
+            }
+          }}
+        >
+          {day}
+        </button>
+      );
+    }
+
+    return days;
+  };
+
+  return (
+    <div ref={dropdownRef} style={{ position: 'relative' }}>
+      {/* Trigger Button */}
+      <button
+        onClick={() => setIsOpen(!isOpen)}
+        style={{
+          display: 'flex',
+          alignItems: 'center',
+          gap: '0.5rem',
+          padding: '0.5rem 0.75rem',
+          background: '#1a1a1a',
+          border: '1px solid #333',
+          borderRadius: '8px',
+          color: '#d2ccc6',
+          fontSize: '0.8125rem',
+          fontWeight: 500,
+          cursor: 'pointer',
+          transition: 'all 0.2s',
+        }}
+        onMouseEnter={(e) => {
+          e.currentTarget.style.borderColor = '#444';
+          e.currentTarget.style.background = '#222';
+        }}
+        onMouseLeave={(e) => {
+          e.currentTarget.style.borderColor = '#333';
+          e.currentTarget.style.background = '#1a1a1a';
+        }}
+      >
+        <svg width="16" height="16" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path
+            fillRule="evenodd"
+            d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z"
+            clipRule="evenodd"
+            fill="currentColor"
+          />
+        </svg>
+        {getDisplayText()}
+        <svg
+          width="12"
+          height="12"
+          viewBox="0 0 12 12"
+          fill="none"
+          style={{
+            transform: isOpen ? 'rotate(180deg)' : 'rotate(0deg)',
+            transition: 'transform 0.2s',
+          }}
+        >
+          <path d="M3 4.5L6 7.5L9 4.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+        </svg>
+      </button>
+
+      {/* Dropdown Panel */}
+      {isOpen && (
+        <div
+          style={{
+            position: 'absolute',
+            top: 'calc(100% + 8px)',
+            right: 0,
+            background: '#1a1a1a',
+            border: '1px solid #333',
+            borderRadius: '12px',
+            boxShadow: '0 8px 32px rgba(0, 0, 0, 0.4)',
+            zIndex: 1000,
+            padding: '1rem',
+            minWidth: '300px',
+          }}
+        >
+          {/* Month Navigation */}
+          <div
+            style={{
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+              marginBottom: '0.75rem',
+            }}
+          >
+            <button
+              onClick={() => setViewingMonth(new Date(viewingMonth.getFullYear(), viewingMonth.getMonth() - 1))}
+              style={{
+                background: 'transparent',
+                border: 'none',
+                color: '#999',
+                cursor: 'pointer',
+                padding: '0.25rem',
+                borderRadius: '4px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}
+              onMouseEnter={(e) => (e.currentTarget.style.color = '#d2ccc6')}
+              onMouseLeave={(e) => (e.currentTarget.style.color = '#999')}
+            >
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                <path d="M10 12L6 8L10 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
+            </button>
+            <span style={{ fontSize: '0.875rem', fontWeight: 600, color: '#d2ccc6' }}>
+              {viewingMonth.toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}
+            </span>
+            <button
+              onClick={() => setViewingMonth(new Date(viewingMonth.getFullYear(), viewingMonth.getMonth() + 1))}
+              style={{
+                background: 'transparent',
+                border: 'none',
+                color: '#999',
+                cursor: 'pointer',
+                padding: '0.25rem',
+                borderRadius: '4px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}
+              onMouseEnter={(e) => (e.currentTarget.style.color = '#d2ccc6')}
+              onMouseLeave={(e) => (e.currentTarget.style.color = '#999')}
+            >
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                <path d="M6 4L10 8L6 12" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
+            </button>
+          </div>
+
+          {/* Selection hint */}
+          <div style={{ fontSize: '0.7rem', color: '#666', marginBottom: '0.5rem', textAlign: 'center' }}>
+            {selectingStart ? 'Select start date' : 'Select end date'}
+          </div>
+
+          {/* Calendar Grid */}
+          <div
+            style={{
+              display: 'grid',
+              gridTemplateColumns: 'repeat(7, 1fr)',
+              gap: '2px',
+              marginBottom: '1rem',
+            }}
+          >
+            {renderCalendar()}
+          </div>
+
+          {/* Apply button for custom range */}
+          {(tempStart || tempEnd) && (
+            <button
+              onClick={handleApply}
+              disabled={!tempStart || !tempEnd}
+              style={{
+                width: '100%',
+                padding: '0.5rem',
+                background: tempStart && tempEnd ? '#4A90E2' : '#333',
+                border: 'none',
+                borderRadius: '6px',
+                color: tempStart && tempEnd ? '#fff' : '#666',
+                fontSize: '0.8125rem',
+                fontWeight: 600,
+                cursor: tempStart && tempEnd ? 'pointer' : 'not-allowed',
+                marginBottom: '1rem',
+                transition: 'all 0.2s',
+              }}
+            >
+              Apply Custom Range
+            </button>
+          )}
+
+          {/* Divider */}
+          <div style={{ height: '1px', background: '#333', marginBottom: '0.75rem' }} />
+
+          {/* Quick Presets */}
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
+            <div style={{ fontSize: '0.7rem', color: '#666', marginBottom: '0.25rem', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+              Quick Select
+            </div>
+            {[
+              { key: '7d' as const, label: 'Last 7 Days' },
+              { key: '30d' as const, label: 'Last 30 Days' },
+              { key: '90d' as const, label: 'Last 90 Days' },
+            ].map(({ key, label }) => (
+              <button
+                key={key}
+                onClick={() => handlePresetClick(key)}
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'space-between',
+                  padding: '0.5rem 0.75rem',
+                  background: presetRange === key ? 'rgba(74, 144, 226, 0.15)' : 'transparent',
+                  border: 'none',
+                  borderRadius: '6px',
+                  color: presetRange === key ? '#4A90E2' : '#999',
+                  fontSize: '0.8125rem',
+                  fontWeight: 500,
+                  cursor: 'pointer',
+                  transition: 'all 0.15s',
+                  textAlign: 'left',
+                }}
+                onMouseEnter={(e) => {
+                  if (presetRange !== key) {
+                    e.currentTarget.style.background = '#252525';
+                    e.currentTarget.style.color = '#d2ccc6';
+                  }
+                }}
+                onMouseLeave={(e) => {
+                  if (presetRange !== key) {
+                    e.currentTarget.style.background = 'transparent';
+                    e.currentTarget.style.color = '#999';
+                  }
+                }}
+              >
+                {label}
+                {presetRange === key && (
+                  <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+                    <path d="M3 7L6 10L11 4" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                  </svg>
+                )}
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
 
 interface PinAnalytics {
   id: string;
@@ -54,9 +475,20 @@ export default function DashboardPage() {
   const router = useRouter();
   const [metrics, setMetrics] = useState<DashboardMetrics | null>(null);
   const [loading, setLoading] = useState(true);
-  const [timeRange, setTimeRange] = useState<'7d' | '30d' | '90d'>('7d');
+  const [presetRange, setPresetRange] = useState<'7d' | '30d' | '90d' | 'custom'>('7d');
+  const [startDate, setStartDate] = useState<Date>(() => {
+    const d = new Date();
+    d.setDate(d.getDate() - 7);
+    return d;
+  });
+  const [endDate, setEndDate] = useState<Date>(new Date());
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
   const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
+
+  const handleRangeChange = (start: Date, end: Date) => {
+    setStartDate(start);
+    setEndDate(end);
+  };
 
   useEffect(() => {
     loadMetrics();
@@ -73,7 +505,7 @@ export default function DashboardPage() {
       // Get basic pin counts (fetch all to allow client-side filtering)
       const { data: allPins, error: pinsError } = await supabase
         .from('pin_scheduled')
-        .select('status, created_at, posted_at')
+        .select('id, status, created_at, posted_at, scheduled_at, title, image_url, error_message')
         .eq('user_id', user.id);
 
       if (pinsError) throw pinsError;
@@ -156,6 +588,8 @@ export default function DashboardPage() {
         pinsPostedOverTime,
         // Store all pins for filtering
         allPinsRaw: allPins,
+        // Add failed pins for display
+        failedPinsData: allPins?.filter((p) => p.status === 'failed') || [],
       } as any);
     } catch (err) {
       console.error('Error loading metrics:', err);
@@ -164,20 +598,25 @@ export default function DashboardPage() {
     }
   }
 
-  // Calculate filtered metrics based on current timeRange
+  // Calculate filtered metrics based on date range
   const getFilteredMetrics = () => {
     if (!metrics) return null;
 
-    const days = timeRange === '7d' ? 7 : timeRange === '30d' ? 30 : 90;
-    const cutoffDate = new Date();
-    cutoffDate.setDate(cutoffDate.getDate() - days);
+    const cutoffDate = new Date(startDate);
     cutoffDate.setHours(0, 0, 0, 0);
+    
+    const endDateCopy = new Date(endDate);
+    endDateCopy.setHours(23, 59, 59, 999);
 
+    const daysDiff = Math.ceil((endDateCopy.getTime() - cutoffDate.getTime()) / (1000 * 60 * 60 * 24));
     const prevCutoffDate = new Date(cutoffDate);
-    prevCutoffDate.setDate(prevCutoffDate.getDate() - days);
+    prevCutoffDate.setDate(prevCutoffDate.getDate() - daysDiff);
 
     // Filter daily metrics
-    const filteredDailyMetrics = metrics.dailyMetrics.filter(m => new Date(m.date) >= cutoffDate);
+    const filteredDailyMetrics = metrics.dailyMetrics.filter(m => {
+      const d = new Date(m.date);
+      return d >= cutoffDate && d <= endDateCopy;
+    });
     const prevDailyMetrics = metrics.dailyMetrics.filter(m => {
       const d = new Date(m.date);
       return d >= prevCutoffDate && d < cutoffDate;
@@ -192,13 +631,16 @@ export default function DashboardPage() {
     const prevClicks = prevDailyMetrics.reduce((sum, m) => sum + m.clicks, 0);
 
     // Filter pins posted over time for graph
-    const filteredPinsPostedOverTime = metrics.pinsPostedOverTime.slice(-days);
+    const filteredPinsPostedOverTime = metrics.pinsPostedOverTime.filter(p => {
+      const d = new Date(p.date);
+      return d >= cutoffDate && d <= endDateCopy;
+    });
 
     // Filter status counts based on the range (using created_at or posted_at)
     const allPins = (metrics as any).allPinsRaw || [];
     const pinsInRange = allPins.filter((p: any) => {
       const date = p.posted_at ? new Date(p.posted_at) : new Date(p.created_at);
-      return date >= cutoffDate;
+      return date >= cutoffDate && date <= endDateCopy;
     });
 
     const totalCreated = pinsInRange.length;
@@ -249,6 +691,14 @@ export default function DashboardPage() {
     return num.toString();
   };
 
+  const [refreshing, setRefreshing] = useState(false);
+
+  const handleRefresh = async () => {
+    setRefreshing(true);
+    await loadMetrics();
+    setRefreshing(false);
+  };
+
   return (
     <div>
       <div style={{ marginBottom: '1rem', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
@@ -260,34 +710,70 @@ export default function DashboardPage() {
             Analytics and metrics for your Pinterest posts
           </p>
         </div>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem', alignItems: 'flex-end' }}>
-          <div style={{ 
-            display: 'flex', 
-            background: '#1a1a1a', 
-            borderRadius: '8px', 
-            padding: '2px', 
-            border: '1px solid #333',
-          }}>
-            {(['7d', '30d', '90d'] as const).map((range) => (
-              <button
-                key={range}
-                onClick={() => setTimeRange(range)}
-                style={{
-                  padding: '6px 12px',
-                  borderRadius: '6px',
-                  fontSize: '0.75rem',
-                  fontWeight: 600,
-                  border: 'none',
-                  cursor: 'pointer',
-                  background: timeRange === range ? '#4A90E2' : 'transparent',
-                  color: timeRange === range ? '#d2ccc6' : '#666',
-                  transition: 'all 0.2s',
-                }}
-              >
-                {range === '7d' ? 'Last Week' : range === '30d' ? 'Last 30 Days' : 'Last 90 Days'}
-              </button>
-            ))}
-          </div>
+        <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'center' }}>
+          <button
+            onClick={handleRefresh}
+            disabled={refreshing || loading}
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '0.5rem',
+              padding: '0.5rem 0.75rem',
+              background: '#1a1a1a',
+              border: '1px solid #333',
+              borderRadius: '8px',
+              color: '#d2ccc6',
+              fontSize: '0.8125rem',
+              fontWeight: 500,
+              cursor: (refreshing || loading) ? 'not-allowed' : 'pointer',
+              opacity: (refreshing || loading) ? 0.6 : 1,
+              transition: 'all 0.2s',
+            }}
+            onMouseEnter={(e) => {
+              if (!refreshing && !loading) {
+                e.currentTarget.style.borderColor = '#444';
+                e.currentTarget.style.background = '#222';
+              }
+            }}
+            onMouseLeave={(e) => {
+              if (!refreshing && !loading) {
+                e.currentTarget.style.borderColor = '#333';
+                e.currentTarget.style.background = '#1a1a1a';
+              }
+            }}
+          >
+            <svg
+              width="16"
+              height="16"
+              viewBox="0 0 20 20"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+              style={{
+                animation: refreshing ? 'spin 1s linear infinite' : 'none',
+              }}
+            >
+              <style>{`
+                @keyframes spin {
+                  from { transform: rotate(0deg); }
+                  to { transform: rotate(360deg); }
+                }
+              `}</style>
+              <path
+                d="M10 3v2M10 15v2M17 10h-2M5 10H3M15.657 4.343l-1.414 1.414M5.757 14.243l-1.414 1.414M15.657 15.657l-1.414-1.414M5.757 5.757l-1.414-1.414"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+              />
+            </svg>
+            {refreshing ? 'Refreshing...' : 'Refresh'}
+          </button>
+          <DateRangePicker
+            startDate={startDate}
+            endDate={endDate}
+            onRangeChange={handleRangeChange}
+            presetRange={presetRange}
+            onPresetChange={setPresetRange}
+          />
         </div>
       </div>
 
@@ -644,6 +1130,123 @@ export default function DashboardPage() {
                             View on Pinterest
                           </a>
                         )}
+                      </div>
+                    );
+                  })}
+              </div>
+            </div>
+          )}
+
+          {/* Failed Posts Section */}
+          {filteredMetrics && (filteredMetrics as any).failedPinsData && (filteredMetrics as any).failedPinsData.length > 0 && (
+            <div
+              style={{
+                background: '#1a1a1a',
+                border: '1px solid #ef4444',
+                borderRadius: '8px',
+                padding: '1rem',
+                marginTop: '1.5rem',
+              }}
+            >
+              <div style={{ marginBottom: '0.75rem' }}>
+                <h2 style={{ fontSize: '0.875rem', fontWeight: 600, color: '#ef4444', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+                  Failed Posts ({(filteredMetrics as any).failedPinsData.length})
+                </h2>
+                <p style={{ fontSize: '0.75rem', color: '#999', marginTop: '0.25rem', marginBottom: 0 }}>
+                  Posts that failed to publish to Pinterest. Click to view error details.
+                </p>
+              </div>
+              <div style={{ display: 'grid', gap: '0.5rem' }}>
+                {(filteredMetrics as any).failedPinsData
+                  .sort((a: any, b: any) => {
+                    const aDate = a.scheduled_at ? new Date(a.scheduled_at).getTime() : new Date(a.created_at).getTime();
+                    const bDate = b.scheduled_at ? new Date(b.scheduled_at).getTime() : new Date(b.created_at).getTime();
+                    return bDate - aDate;
+                  })
+                  .slice(0, 10)
+                  .map((pin: any) => {
+                    const formatDate = (dateString: string | null) => {
+                      if (!dateString) return '';
+                      const date = new Date(dateString);
+                      const today = new Date();
+                      const yesterday = new Date(today);
+                      yesterday.setDate(yesterday.getDate() - 1);
+                      
+                      const dateStr = date.toISOString().split('T')[0];
+                      const todayStr = today.toISOString().split('T')[0];
+                      const yesterdayStr = yesterday.toISOString().split('T')[0];
+                      
+                      if (dateStr === todayStr) return 'Today';
+                      if (dateStr === yesterdayStr) return 'Yesterday';
+                      return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+                    };
+                    return (
+                      <div
+                        key={pin.id}
+                        style={{
+                          display: 'flex',
+                          gap: '0.75rem',
+                          padding: '0.75rem',
+                          background: '#252525',
+                          borderRadius: '6px',
+                          border: '1px solid rgba(239, 68, 68, 0.3)',
+                          transition: 'all 0.2s',
+                          alignItems: 'flex-start',
+                        }}
+                        onMouseEnter={(e) => {
+                          e.currentTarget.style.borderColor = 'rgba(239, 68, 68, 0.5)';
+                          e.currentTarget.style.background = '#2a2a2a';
+                        }}
+                        onMouseLeave={(e) => {
+                          e.currentTarget.style.borderColor = 'rgba(239, 68, 68, 0.3)';
+                          e.currentTarget.style.background = '#252525';
+                        }}
+                      >
+                        {pin.image_url && (
+                          <img
+                            src={pin.image_url}
+                            alt={pin.title || 'Failed pin'}
+                            style={{
+                              width: '64px',
+                              height: '64px',
+                              objectFit: 'cover',
+                              borderRadius: '4px',
+                              flexShrink: 0,
+                            }}
+                          />
+                        )}
+                        <div style={{ flex: 1, minWidth: 0 }}>
+                          <div style={{ fontSize: '0.8125rem', fontWeight: 500, color: '#d2ccc6', marginBottom: '0.5rem' }}>
+                            {pin.title || 'Untitled Pin'}
+                          </div>
+                          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+                            <div style={{ 
+                              padding: '0.5rem', 
+                              background: 'rgba(239, 68, 68, 0.1)', 
+                              borderRadius: '4px',
+                              border: '1px solid rgba(239, 68, 68, 0.2)'
+                            }}>
+                              <div style={{ color: '#ef4444', fontWeight: 600, fontSize: '0.75rem', marginBottom: '0.25rem', display: 'flex', alignItems: 'center', gap: '0.25rem' }}>
+                                <span>⚠</span>
+                                <span>Pinterest Error</span>
+                              </div>
+                              {pin.error_message ? (
+                                <div style={{ color: '#d2ccc6', fontSize: '0.75rem', lineHeight: '1.4', whiteSpace: 'pre-wrap', wordBreak: 'break-word' }}>
+                                  {pin.error_message}
+                                </div>
+                              ) : (
+                                <div style={{ color: '#999', fontSize: '0.75rem', fontStyle: 'italic' }}>
+                                  No error message available
+                                </div>
+                              )}
+                            </div>
+                            {pin.scheduled_at && (
+                              <div style={{ color: '#666', fontSize: '0.7rem' }}>
+                                Scheduled for: {formatDate(pin.scheduled_at)}
+                              </div>
+                            )}
+                          </div>
+                        </div>
                       </div>
                     );
                   })}

@@ -7,9 +7,12 @@ export async function GET(request: NextRequest) {
   const state = searchParams.get('state'); // user_id
   const error = searchParams.get('error');
 
-  const host = request.headers.get('host');
-  const protocol = request.headers.get('x-forwarded-proto') || 'http';
-  const frontendUrl = process.env.NEXT_PUBLIC_SITE_URL || `${protocol}://${host}`;
+  const host = request.headers.get('host')?.trim();
+  const protocol = (request.headers.get('x-forwarded-proto') || 'http').trim();
+  // In dev, always use localhost if host is localhost
+  const frontendUrl = (host?.includes('localhost') || host?.includes('127.0.0.1')) 
+    ? `${protocol}://${host}`.trim()
+    : (process.env.NEXT_PUBLIC_SITE_URL?.trim() || `${protocol}://${host}`.trim());
 
   if (error) {
     return NextResponse.redirect(`${frontendUrl}/auth?error=${error}`);
@@ -45,8 +48,8 @@ export async function GET(request: NextRequest) {
     // Add continuous_refresh for older apps or to be safe (ignored by newer apps)
     bodyParams.append('continuous_refresh', 'true');
 
-    // Exchange code for tokens - sandbox only
-    const tokenResponse = await fetch('https://api-sandbox.pinterest.com/v5/oauth/token', {
+    // Exchange code for tokens
+    const tokenResponse = await fetch('https://api.pinterest.com/v5/oauth/token', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded',
@@ -65,8 +68,8 @@ export async function GET(request: NextRequest) {
     console.log('Token exchange successful');
     const expiresAt = new Date(Date.now() + (tokenData.expires_in * 1000));
 
-    // Fetch user info from Pinterest (sandbox only)
-    const userEndpoint = 'https://api-sandbox.pinterest.com/v5/user_account';
+    // Fetch user info from Pinterest
+    const userEndpoint = 'https://api.pinterest.com/v5/user_account';
 
     const userResponse = await fetch(userEndpoint, {
       headers: {

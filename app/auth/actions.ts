@@ -7,20 +7,25 @@ import { headers } from 'next/headers';
 export async function signUp(formData: FormData) {
   const supabase = await createClient();
   const headersList = await headers();
-  const host = headersList.get('host');
-  const protocol = headersList.get('x-forwarded-proto') || 'http';
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || `${protocol}://${host}`;
+  const host = headersList.get('host')?.trim();
+  const protocol = (headersList.get('x-forwarded-proto') || 'http').trim();
+  // In dev, always use localhost if host is localhost
+  const siteUrl = (host?.includes('localhost') || host?.includes('127.0.0.1')) 
+    ? `${protocol}://${host}`.trim()
+    : (process.env.NEXT_PUBLIC_SITE_URL?.trim() || `${protocol}://${host}`.trim());
 
   const data = {
     email: formData.get('email') as string,
     password: formData.get('password') as string,
   };
 
+  const redirectUrl = `${siteUrl}/auth/confirm?next=/dashboard`.trim();
+  
   const { error } = await supabase.auth.signUp({
     email: data.email,
     password: data.password,
     options: {
-      emailRedirectTo: `${siteUrl}/auth/confirm?next=/dashboard`,
+      emailRedirectTo: redirectUrl,
     },
   });
 
@@ -77,14 +82,19 @@ export async function signIn(formData: FormData) {
 export async function signInWithGoogle() {
   const supabase = await createClient();
   const headersList = await headers();
-  const host = headersList.get('host');
-  const protocol = headersList.get('x-forwarded-proto') || 'http';
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || `${protocol}://${host}`;
+  const host = headersList.get('host')?.trim();
+  const protocol = (headersList.get('x-forwarded-proto') || 'http').trim();
+  // In dev, always use localhost if host is localhost
+  const siteUrl = (host?.includes('localhost') || host?.includes('127.0.0.1')) 
+    ? `${protocol}://${host}`.trim()
+    : (process.env.NEXT_PUBLIC_SITE_URL?.trim() || `${protocol}://${host}`.trim());
 
+  const redirectUrl = `${siteUrl}/auth/confirm?next=/dashboard`.trim();
+  
   const { data, error } = await supabase.auth.signInWithOAuth({
     provider: 'google',
     options: {
-      redirectTo: `${siteUrl}/auth/confirm?next=/dashboard`,
+      redirectTo: redirectUrl,
     },
   });
 

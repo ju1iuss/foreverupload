@@ -70,7 +70,7 @@ npm run dev
 - Image upload to Supabase Storage
 - Bulk edit titles and descriptions
 - Calendar view of scheduled posts
-- Daily scheduling limit: 6 pins/day.
+- Daily scheduling limit: 10 pins/day.
 - OAuth authentication with Pinterest
 
 ## Pinterest Developer Guidelines Compliance

@@ -10,6 +10,7 @@ interface UploadedImage {
   url: string;
   title: string;
   description: string;
+  link?: string;
   selected: boolean;
 }
 
@@ -146,22 +147,8 @@ export default function SchedulePage() {
     setImages(images.map((img, i) => (i === index ? { ...img, selected: !img.selected } : img)));
   };
 
-  const generateScheduleTimes = (date: string, count: number) => {
-    const times = [];
-    const startHour = 8;
-    const endHour = 17;
-    const totalHours = endHour - startHour;
-    const interval = totalHours / count;
-
-    for (let i = 0; i < count; i++) {
-      const hour = Math.floor(startHour + i * interval);
-      const minute = Math.floor((i * interval - Math.floor(i * interval)) * 60);
-      const scheduledDate = new Date(`${date}T${String(hour).padStart(2, '0')}:${String(minute).padStart(2, '0')}:00`);
-      times.push(scheduledDate.toISOString());
-    }
-
-    return times;
-  };
+  const DAILY_LIMIT = 6;
+  const CRON_HOURS = [8, 9, 10, 11, 12, 13];
 
   const handleConfirmSchedule = async () => {
     if (!isAuthenticated) {
@@ -183,16 +170,55 @@ export default function SchedulePage() {
     setSaving(true);
 
     try {
-      const scheduleTimes = generateScheduleTimes(selectedDate, Math.min(selectedImages.length, 8));
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) {
+        alert('You must be logged in to schedule pins');
+        setSaving(false);
+        return;
+      }
 
-      const pinsToCreate = selectedImages.slice(0, 8).map((img, idx) => ({
-        image_url: img.url,
-        title: img.title,
-        description: img.description,
-        board_id: boardId,
-        scheduled_at: scheduleTimes[idx] || scheduleTimes[scheduleTimes.length - 1],
-        status: 'pending',
-      }));
+      // Get existing pending posts to count per day and push overflow to next days
+      const { data: pendingPosts } = await supabase
+        .from('pin_scheduled')
+        .select('scheduled_at, created_at')
+        .eq('status', 'pending')
+        .eq('user_id', user.id)
+        .order('scheduled_at', { ascending: true, nullsFirst: false });
+
+      const postsPerDay = new Map<string, number>();
+      (pendingPosts || []).forEach(post => {
+        const scheduleDate = new Date(post.scheduled_at || post.created_at);
+        const dateKey = scheduleDate.toISOString().split('T')[0];
+        postsPerDay.set(dateKey, (postsPerDay.get(dateKey) || 0) + 1);
+      });
+
+      // Build pins distributed across days (max 6 per day)
+      const pinsToCreate: any[] = [];
+      let currentDate = new Date(selectedDate + 'T08:00:00');
+      for (const img of selectedImages) {
+        let dateKey = currentDate.toISOString().split('T')[0];
+        let postsOnDay = postsPerDay.get(dateKey) || 0;
+        while (postsOnDay >= DAILY_LIMIT) {
+          currentDate.setDate(currentDate.getDate() + 1);
+          currentDate.setHours(8, 0, 0, 0);
+          dateKey = currentDate.toISOString().split('T')[0];
+          postsOnDay = postsPerDay.get(dateKey) || 0;
+        }
+        const positionInDay = postsOnDay;
+        currentDate.setHours(CRON_HOURS[positionInDay] ?? 8, 0, 0, 0);
+        postsPerDay.set(dateKey, postsOnDay + 1);
+
+        pinsToCreate.push({
+          user_id: user.id,
+          image_url: img.url,
+          title: img.title,
+          description: img.description,
+          link: img.link || null,
+          board_id: boardId,
+          scheduled_at: currentDate.toISOString(),
+          status: 'pending',
+        });
+      }
 
       const { error } = await supabase.from('pin_scheduled').insert(pinsToCreate);
 
@@ -210,7 +236,10 @@ export default function SchedulePage() {
   return (
     <div style={{ minHeight: '100vh', padding: '2rem', maxWidth: '1200px', margin: '0 auto' }}>
       <header style={{ marginBottom: '2rem' }}>
-        <h1 style={{ fontSize: '1.5rem', fontWeight: 600, marginBottom: '1rem' }}>Schedule Posts</h1>
+        <h1 style={{ fontSize: '1.5rem', fontWeight: 600, marginBottom: '0.25rem' }}>Schedule Posts</h1>
+        <p style={{ fontSize: '0.875rem', color: '#999', marginBottom: '1rem' }}>
+          You choose when each pin posts to Pinterest. Scheduled pins are published automatically at those times.
+        </p>
         
         {!isAuthenticated ? (
           <div

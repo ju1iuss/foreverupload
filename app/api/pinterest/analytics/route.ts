@@ -6,7 +6,7 @@ async function refreshAccessToken(refreshToken: string, userId: string, supabase
   const clientSecret = process.env.PINTEREST_CLIENT_SECRET;
 
   try {
-    const response = await fetch('https://api-sandbox.pinterest.com/v5/oauth/token', {
+    const response = await fetch('https://api.pinterest.com/v5/oauth/token', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded',
@@ -61,13 +61,11 @@ export async function GET(request: NextRequest) {
       .eq('user_id', user.id)
       .maybeSingle();
 
-    const sandboxToken = process.env.PINTEREST_SANDBOX_TOKEN;
-
-    if (!authData && !sandboxToken) {
+    if (!authData) {
       return NextResponse.json({ error: 'Not connected' }, { status: 401 });
     }
 
-    let accessToken = authData?.access_token || sandboxToken;
+    let accessToken = authData.access_token;
     
     // Refresh token if needed (only if using database auth)
     if (authData && new Date(authData.expires_at) <= new Date()) {
@@ -95,23 +93,12 @@ export async function GET(request: NextRequest) {
     const pinsWithAnalytics = await Promise.all(
       postedPins.map(async (pin: any) => {
         try {
-          // Determine base URL (try production first, then sandbox if token exchange was sandbox)
-          // We'll try production and fallback to sandbox if it fails
-          const getPinAnalytics = async (baseUrl: string) => {
-            return fetch(
-              `${baseUrl}/v5/pins/${pin.pin_id}/analytics?start_date=${getDateDaysAgo(90)}&end_date=${getDateToday()}&metric_types=IMPRESSION,SAVE,CLICKTHROUGH`,
-              {
-                headers: { Authorization: `Bearer ${accessToken}` },
-              }
-            );
-          };
-
-          // Try production first, then fallback to sandbox
-          let response = await getPinAnalytics('https://api.pinterest.com');
-          
-          if (!response.ok) {
-            response = await getPinAnalytics('https://api-sandbox.pinterest.com');
-          }
+          const response = await fetch(
+            `https://api.pinterest.com/v5/pins/${pin.pin_id}/analytics?start_date=${getDateDaysAgo(90)}&end_date=${getDateToday()}&metric_types=IMPRESSION,SAVE,CLICKTHROUGH`,
+            {
+              headers: { Authorization: `Bearer ${accessToken}` },
+            }
+          );
 
           if (!response.ok) return { ...pin, impressions: 0, saves: 0, clicks: 0, dailyMetrics: [] };
           const data = await response.json();
